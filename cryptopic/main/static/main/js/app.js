@@ -82,12 +82,16 @@ let tapEncryptionBtnKey = function(evt) {
     if (getStepEncryption() == 1) {
       goNextStep();
     } else {
+      let cookie = document.cookie
+      let csrfToken = cookie.substring(cookie.indexOf('=') + 1)
       fetch(
-        'https://jsonplaceholder.typicode.com/posts',
+        '/req',
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'X-Requested-With' : 'XMLHttpRequest',
+            'X-CSRFToken': csrfToken
           },
           body: JSON.stringify(encryptionData),
         })
@@ -97,12 +101,15 @@ let tapEncryptionBtnKey = function(evt) {
   }
   if (getTypeEncryption() == 'decipher') {
     delete encryptionData.text;
+    let cookie = document.cookie
+    let csrfToken = cookie.substring(cookie.indexOf('=') + 1)
     fetch(
-      'https://jsonplaceholder.typicode.com/posts',
+      '/req',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
         },
         body: JSON.stringify(encryptionData),
       })
