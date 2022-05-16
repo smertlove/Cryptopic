@@ -11,7 +11,8 @@ using namespace macaron;
 
 extern "C" {
     char* call_manage_data(char* str)    {
-        str += 23;
+        while (*str != ',') {str++;}
+        str++;
 
         std::cout << "c++ func called" << std::endl;
         size_t size = strlen(str);
