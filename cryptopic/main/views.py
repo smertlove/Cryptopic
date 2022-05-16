@@ -19,7 +19,7 @@ def index(request):
     return render(request, 'main/index.html')
 
 def req(request):
-    a = json.loads(request.body.decode('utf-8'))
-    b = lib.call_manage_data(bytes(a["picture"], encoding="utf-8"))
-    b += b" works nicely"
-    return JsonResponse({"Большой привет": "с сервака", "picture" : b.decode("utf-8")}, content_type="application/json")
+    front_body = json.loads(request.body.decode('utf-8'))
+    pic = lib.call_manage_data(bytes(front_body["picture"], encoding="utf-8"))
+    # return JsonResponse({"Большой привет": "с сервака", "picture" : b.decode("utf-8")}, content_type="application/json")
+    return JsonResponse(front_body, content_type="application/json")

@@ -6,20 +6,16 @@ let encryptionBtnKey = document.querySelector(".encryption_btn--key");
 let encryptionBtnBack = document.querySelector(".encryption_btn--back");
 
 let encryptionData = {
+  operation: "",
   text: "",
   picture: "",
   picture_length: "",
+  picture_type: "",
 }
 let toggleTypeEncryption = function() {
   toggleTypeEncryptionClass();
   cleanEncryptionForm();
   removeUploadedPic();
-
-  if (getTypeEncryption() == "decipher") {
-    encryptionInputText.disabled = true;
-  } else {
-    encryptionInputText.disabled = false;
-  }
 }
 
 let toggleTypeEncryptionClass = function() {
@@ -41,11 +37,10 @@ let showUploadedPic = function(evt) {
 
   reader.onload = function(e) {
 
-    console.log('adsasd');
     var img = document.createElement('img');
 
     img.onload = function() {
-      console.log(this.width+'x'+this.height); // наконец-то результат
+      console.log(this.width+'x'+this.height);
     };
 
     img.src = e.target.result;
@@ -64,6 +59,9 @@ let getPic = function() {
     encryptionData.picture = evt.target.result;
 
     img.src = evt.target.result;
+    img.className = "encryption_input-img";
+    document.querySelector(".encryption_input-img-wrap").append(img);
+    encryptionData.picture_type = img.src.slice(img.src.indexOf("/") + 1, img.src.indexOf(";"));
 
     let showSize = function() {
       encryptionData.picture_length = img.width * img.height;
@@ -74,7 +72,15 @@ let getPic = function() {
 
   reader.addEventListener("load", createImg);
 }
-
+let updateSrcImg = function(newSrc) {
+  goNextStep();
+  document.querySelector('.encryption_form').classList.add("encryption_form--updated");
+  document.querySelector('.encryption_input-img').src = newSrc;
+}
+let showText = function(text) {
+  goNextStep();
+  document.querySelector('.encryption_input-text').value = text;
+}
 let tapEncryptionBtnKey = function(evt) {
   evt.preventDefault();
 
@@ -82,12 +88,14 @@ let tapEncryptionBtnKey = function(evt) {
     if (getStepEncryption() == 1) {
       goNextStep();
     } else {
-      let cookie = document.cookie
-      let csrfToken = cookie.substring(cookie.indexOf('=') + 1)
-      console.log("уехало на сервак:")
-      console.log(encryptionData)
+      encryptionData.operation = 'encrypt';
+      encryptionData.text = encryptionInputText.value;
+      let cookie = document.cookie;
+      let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
+      console.log('ushlo na servak\n', encryptionData);
       fetch(
         '/req',
+        // 'https://jsonplaceholder.typicode.com/posts',
         {
           method: 'POST',
           headers: {
@@ -98,15 +106,17 @@ let tapEncryptionBtnKey = function(evt) {
           body: JSON.stringify(encryptionData),
         })
         .then((response) => response.json())
-        .then((json) => console.log(json));
+        .then((json) => updateSrcImg(json.picture));
     }
   }
   if (getTypeEncryption() == 'decipher') {
+    encryptionData.operation = 'decipher';
     delete encryptionData.text;
-    let cookie = document.cookie
-    let csrfToken = cookie.substring(cookie.indexOf('=') + 1)
+    let cookie = document.cookie;
+    let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
     fetch(
       '/req',
+      // 'https://jsonplaceholder.typicode.com/posts',
       {
         method: 'POST',
         headers: {
@@ -116,7 +126,7 @@ let tapEncryptionBtnKey = function(evt) {
         body: JSON.stringify(encryptionData),
       })
       .then((response) => response.json())
-      .then((json) => console.log(json));
+      .then((json) => showText(json.picture_length));
   }
 }
 
@@ -134,12 +144,18 @@ let getStepEncryption = function() {
 }
 
 let goNextStep = function() {
+  numberStep = +formEncription.className.split("encryption_form--step-")[1][0];
+
   formEncription.classList.remove("encryption_form--step-1");
-  formEncription.classList.add("encryption_form--step-2");
+  formEncription.classList.remove("encryption_form--step-2");
+  formEncription.classList.add(`encryption_form--step-${numberStep + 1}`);
 }
 let goPreviousStep = function() {
-  formEncription.classList.add("encryption_form--step-1");
+  numberStep = +formEncription.className.split("encryption_form--step-")[1][0];
+
+  formEncription.classList.remove("encryption_form--step-3");
   formEncription.classList.remove("encryption_form--step-2");
+  formEncription.classList.add(`encryption_form--step-${numberStep - 1}`);
 }
 
 
@@ -153,47 +169,57 @@ encryptionBtnBack.addEventListener("click", goPreviousStep);
 
 //раздел info
 
-// let sectionEncrypt = document.querySelector(".info__how--encrypt");
-// let sectionEncryptIcon = sectionEncrypt.querySelectorAll(".info__how-scheme-icon");
-//
-// sectionEncrypt.addEventListener('click', function(event) {
-//
-//     if (event.target.className === 'info__how-scheme-icon') {
-//       for (let item of Array.from(sectionEncryptIcon)) {
-//         item.classList.remove("info__how-scheme-icon--active");
-//       }
-//       event.target.classList.add("info__how-scheme-icon--active");
-//       console.log(event.target);
-//     }
-//
-//   });
+let info = document.querySelector('.info');
+let infoHowEncrypt = info.querySelector('.info_how--encrypt');
+let schemeEncrypt = infoHowEncrypt.querySelector('.info_how-scheme');
+let schemeEncryptIcons = schemeEncrypt.querySelectorAll('.info_how-scheme-icon');
+let schemeEncryptIconsArr = Array.from(schemeEncryptIcons);
+let schemeEncryptTexts = infoHowEncrypt.querySelectorAll('.info_how-text');
+let schemeEncryptTextsArr = Array.from(schemeEncryptTexts);
 
-//AJAX
+schemeEncrypt.addEventListener('click', function(event) {
+  let icon = event.target.closest(".info_how-scheme-icon");
 
-const ajaxSend = async (formData) => {
-  const fetchResp = await fetch('mail.php', {
-    method: 'POST',
-    body: formData
-  });
-  if (!fetchResp.ok) {
-    throw new Error(`Ошибка по адресу ${url}, статус ошибки ${fetchResp.status}`);
+  if (icon) {
+    for (let icon of schemeEncryptIconsArr) {
+      icon.classList.remove("info_how-scheme-icon--active");
+    }
+    icon.classList.add("info_how-scheme-icon--active");
+
+    let iconNum = icon.dataset.count;
+
+    for (let text of schemeEncryptTextsArr) {
+      text.classList.remove("info_how-text--active");
+    }
+    infoHowEncrypt.querySelector(`.info_how-text--${iconNum}`).classList.add("info_how-text--active");
   }
-  return await fetchResp.text();
-};
-
-formEncription.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    let formData = new FormData(this);
-    formData = Object.fromEntries(formData);
-
-    ajaxSend(formData)
-      .then((response) => {
-        console.log(response);
-        form.reset(); // очищаем поля формы
-      })
-      .catch((err) => console.error(err))
 });
+
+let infoHowDecipher = info.querySelector('.info_how--decipher');
+let schemeDecipher = infoHowDecipher.querySelector('.info_how-scheme');
+let schemeDecipherIcons = schemeDecipher.querySelectorAll('.info_how-scheme-icon');
+let schemeDecipherIconsArr = Array.from(schemeDecipherIcons);
+let schemeDecipherTexts = infoHowDecipher.querySelectorAll('.info_how-text');
+let schemeDecipherTextsArr = Array.from(schemeDecipherTexts);
+
+schemeDecipher.addEventListener('click', function(event) {
+  let icon = event.target.closest(".info_how-scheme-icon");
+
+  if (icon) {
+    for (let icon of schemeDecipherIconsArr) {
+      icon.classList.remove("info_how-scheme-icon--active");
+    }
+    icon.classList.add("info_how-scheme-icon--active");
+
+    let iconNum = icon.dataset.count;
+
+    for (let text of schemeDecipherTextsArr) {
+      text.classList.remove("info_how-text--active");
+    }
+    infoHowDecipher.querySelector(`.info_how-text--${iconNum}`).classList.add("info_how-text--active");
+  }
+});
+
 //# sourceMappingURL=app.js.map
 
 //# sourceMappingURL=app.js.map
