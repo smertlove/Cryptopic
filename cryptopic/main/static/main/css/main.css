@@ -283,6 +283,18 @@ body {
   display: none;
 }
 
+.encryption_form--updated .encryption_input-text-wrap {
+  display: none !important;
+}
+
+.encryption_form--updated .encryption_input-file-wrap {
+  display: flex !important;
+}
+
+.encryption_form--updated .encryption_btn--key {
+  display: none;
+}
+
 .encryption_text-wrapper {
   order: 2;
 }

@@ -5,12 +5,15 @@
 #include <cstring>
 #include <cstdlib>
 
+#include <random>
+
 #include "Base64.h"
 
 using namespace macaron;
 
 extern "C" {
-    char* call_manage_data(char* str)    {
+    char* call_manage_data(char* str, char* txt)    {
+
         while (*str != ',') {str++;}
         str++;
 
@@ -27,7 +30,8 @@ extern "C" {
         size_t size2 = img_decoded.length();
 
         std::ofstream fout;
-        fout.open("../output.png", std::ios::app |std::ios::binary);
+        fout.open("../output_imgs/" + std::string(txt) + ".png", std::ios::app |std::ios::binary);
+        std::cout << "save" << std::endl;
         fout << img_decoded;
         // fout.write(img_decoded, size2);
         fout.close();

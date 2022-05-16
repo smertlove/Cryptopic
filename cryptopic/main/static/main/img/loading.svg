@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="260" viewBox="0 0 200 200">
+  <circle transform="rotate(-90 100 100)" cx="100" cy="100" r="50" fill="none" stroke="rgba(0, 0, 0, 0.2)" stroke-width="30" stroke-dashoffset="0" stroke-dasharray="314" >
+    <animate attributeName="stroke-dashoffset" values="314;0" dur="1s"/>
+  </circle>
+</svg>

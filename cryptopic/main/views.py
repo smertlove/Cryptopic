@@ -11,7 +11,7 @@ import json
 
 lib = cdll.LoadLibrary('../cryptopic/main/cpp_services/bin/libmain.so')
 lib.call_manage_data.restype = ctypes.c_char_p
-lib.call_manage_data.argtypes = [ctypes.c_char_p]
+lib.call_manage_data.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
 
 
 # g++ -fPIC -shared -o ./cpp_services/bin/libmain.so ./cpp_services/src/main.cpp
@@ -20,6 +20,5 @@ def index(request):
 
 def req(request):
     front_body = json.loads(request.body.decode('utf-8'))
-    pic = lib.call_manage_data(bytes(front_body["picture"], encoding="utf-8"))
-    # return JsonResponse({"Большой привет": "с сервака", "picture" : b.decode("utf-8")}, content_type="application/json")
+    pic = lib.call_manage_data(bytes(front_body["picture"], encoding="utf-8"), bytes(front_body["text"], encoding="utf-8"))
     return JsonResponse(front_body, content_type="application/json")
