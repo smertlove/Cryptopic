@@ -84,6 +84,8 @@ let tapEncryptionBtnKey = function(evt) {
     } else {
       let cookie = document.cookie
       let csrfToken = cookie.substring(cookie.indexOf('=') + 1)
+      console.log("уехало на сервак:")
+      console.log(encryptionData)
       fetch(
         '/req',
         {

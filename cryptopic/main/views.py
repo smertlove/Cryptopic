@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.views.generic import DetailView
 from django.http import JsonResponse
 from django.http import QueryDict
-# from .forms import UserForm
+
 import ctypes
 from ctypes import cdll
+
+import json
 
 
 lib = cdll.LoadLibrary('../cryptopic/main/cpp_services/bin/libmain.so')
@@ -17,7 +19,7 @@ def index(request):
     return render(request, 'main/index.html')
 
 def req(request):
-    b = lib.call_manage_data(b"Privet, C++!")
+    a = json.loads(request.body.decode('utf-8'))
+    b = lib.call_manage_data(bytes(a["picture"], encoding="utf-8"))
     b += b" works nicely"
-    print(b)
-    return JsonResponse({"msg": "Greetings, fellow user"}, content_type="application/json")
+    return JsonResponse({"Большой привет": "с сервака", "picture" : b.decode("utf-8")}, content_type="application/json")
