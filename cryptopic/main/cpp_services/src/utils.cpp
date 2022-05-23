@@ -8,6 +8,8 @@
 
 using namespace macaron;
 
+namespace utils {
+
 enum operation_type {
     ENCRYPT = 1,
     DECRYPT,
@@ -64,3 +66,5 @@ std::string decode_img(char* b64_img, Base64 *b64_manager) {
 
     return img_decoded;
 }
+
+}  // namespace utils

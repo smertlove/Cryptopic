@@ -18,6 +18,7 @@
 
 
 using namespace macaron;
+using namespace utils;
 
 extern "C" {
     char* call_manage_data(char* operation_type, char* b64_img, char* txt, char* img_extension) {
