@@ -31,6 +31,9 @@ def req(request):
         bytes(front_body["message"], encoding="utf-8"),
         bytes(front_body["picture"]["type"], encoding="utf-8")
     )
+    pic = "data:image/png;base64," + pic.decode("utf-8")
+    del front_body["picture"]["data"]
+    front_body["picture"]["data"] = pic
     return JsonResponse(front_body, content_type="application/json")
 
 

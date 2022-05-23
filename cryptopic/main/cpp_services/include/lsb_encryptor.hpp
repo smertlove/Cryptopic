@@ -1,6 +1,7 @@
 #pragma once
 #include <opencv2/core/core.hpp>
 
+#include "encryptor_consts.h"
 /*!
  * Hides data in an image by manipulating the least significant bits of each pixel.
  *
@@ -12,11 +13,7 @@
  */
 
 
-enum {
-    STORE_ONCE = 1,   // Stores the specified input once.
-    STORE_FULL,       // Stores the specified input and fills the rest of the available space with zeros.
-    STORE_REPEAT      // Stores the specified input in a repeating manner.
-};
+
 
 
 inline cv::Mat encode_lsb(const cv::Mat& img, const std::string& text, int mode = STORE_ONCE)

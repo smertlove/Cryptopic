@@ -1,6 +1,7 @@
 #pragma once
 #include <opencv2/core/core.hpp>
 
+#include "encryptor_consts.h"
 /*!
  * Uses discrete cosine transformation to hide data in the coefficients of a channel of an image.
  *
@@ -13,11 +14,7 @@
  * \return Altered image with hidden data.
  */
 
-enum {
-    STORE_ONCE = 1,   // Stores the specified input once.
-    STORE_FULL,       // Stores the specified input and fills the rest of the available space with zeros.
-    STORE_REPEAT      // Stores the specified input in a repeating manner.
-};
+
 
 inline cv::Mat encode_dct(const cv::Mat& img, const std::string& text, int mode = STORE_FULL, int channel = 0, int intensity = 30)
 {
