@@ -73,7 +73,7 @@ picture img {
   padding: 15px;
   text-decoration: none;
   color: white;
-  background-color: #DD5E5E;
+  background-color: #0A3D2B;
   font-weight: bold;
 }
 
@@ -87,12 +87,11 @@ picture img {
 
 body {
   font-family: "CascadiaMono", "Arial", sans-serif;
-  color: white;
 }
 
 :focus-visible {
   outline: 0;
-  outline: 2px solid #DD5E5E;
+  outline: 2px solid #0A3D2B;
 }
 
 .container {
@@ -107,7 +106,7 @@ body {
   padding: 10px 10px;
   cursor: pointer;
   text-decoration: none;
-  background-color: #043D2A;
+  color: white;
   border: none;
   font-family: "CascadiaMono", "Arial", sans-serif;
   font-size: 18px;
@@ -123,201 +122,23 @@ body {
   opacity: 0.3;
 }
 
-.toggle {
-  position: relative;
-  -webkit-appearance: none;
-  outline: none;
-  width: 40px;
-  height: 20px;
-  background-color: white;
-  border: 3px solid white;
-  border-radius: 10px;
-  transition-duration: 0.5s;
-  cursor: pointer;
-}
-
-.toggle::after {
-  transition-duration: 0.5s;
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  background-color: #043D2A;
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
-}
-
-.toggle:checked::after {
-  width: 36px;
-}
-
 .encryption {
-  height: calc(100vh - 130px);
-  min-height: 500px;
-}
-
-.encryption_form {
   display: flex;
+  justify-content: flex-start;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  height: calc(100vh - 130px);
+  min-height: 500px;
+  padding-top: 40px;
 }
 
-.encryption_form--encrypt.encryption_form--step-1 .encryption_text--text {
-  display: block;
+.encryption--encrypt .encryption_form--encrypt {
+  display: grid;
 }
 
-.encryption_form--encrypt.encryption_form--step-1 .encryption_input-file-wrap {
-  display: none;
-}
-
-.encryption_form--encrypt.encryption_form--step-1 .encryption_input-text-wrap {
-  display: flex;
-}
-
-.encryption_form--encrypt.encryption_form--step-1 .encryption_header::before {
-  content: attr(first-data);
-}
-
-.encryption_form--encrypt.encryption_form--step-1 .encryption_text--deciphe {
-  display: none;
-}
-
-.encryption_form--encrypt.encryption_form--step-2 .encryption_text--img {
-  display: block;
-}
-
-.encryption_form--encrypt.encryption_form--step-2 .encryption_input-file-wrap {
-  display: flex;
-}
-
-.encryption_form--encrypt.encryption_form--step-2 .encryption_input-text-wrap {
-  display: none;
-}
-
-.encryption_form--encrypt.encryption_form--step-2 .encryption_header::before {
-  content: attr(second-data);
-}
-
-.encryption_form--encrypt.encryption_form--step-2 .encryption_btn--back {
-  display: block;
-}
-
-.encryption_form--encrypt.encryption_form--step-2 .encryption_text--deciphe {
-  display: none;
-}
-
-.encryption_form--decipher.encryption_form--step-1 .encryption_input-text-wrap {
-  display: none;
-}
-
-.encryption_form--decipher.encryption_form--step-1 .encryption_header {
-  display: none;
-}
-
-.encryption_form--decipher.encryption_form--step-1 .encryption_text--img {
-  display: block;
-}
-
-.encryption_form--decipher.encryption_form--step-1 .encryption_text--uploaded {
-  display: none;
-}
-
-.encryption_form--decipher.encryption_form--step-1 .encryption_text--deciphe {
-  display: none;
-}
-
-.encryption_form--decipher.encryption_form--step-2 .encryption_input-text-wrap {
-  display: flex;
-}
-
-.encryption_form--decipher.encryption_form--step-2 .encryption_input-file-wrap {
-  display: none;
-}
-
-.encryption_form--decipher.encryption_form--step-2 .encryption_header {
-  display: none;
-}
-
-.encryption_form--decipher.encryption_form--step-2 .encryption_text--img {
-  display: none !important;
-}
-
-.encryption_form--decipher.encryption_form--step-2 .encryption_text--uploaded {
-  display: none;
-}
-
-.encryption_form--decipher.encryption_form--step-2 .encryption_btn--key {
-  display: none;
-}
-
-.encryption_form--decipher.encryption_form--step-2 .encryption_text--deciphe {
-  display: block;
-}
-
-.encryption_form--uploaded.encryption_form--step-2 .encryption_text--img, .encryption_form--uploaded.encryption_form--step-1 .encryption_text--img {
-  display: block;
-}
-
-.encryption_form--uploaded.encryption_form--step-2 .encryption_text--text, .encryption_form--uploaded.encryption_form--step-1 .encryption_text--text {
-  display: none;
-}
-
-.encryption_form--uploaded.encryption_form--step-2 .encryption_text--uploaded, .encryption_form--uploaded.encryption_form--step-1 .encryption_text--uploaded {
-  display: none;
-}
-
-.encryption_form--updated .encryption_header::before {
-  content: attr(third-data) !important;
-}
-
-.encryption_form--updated .encryption_text--uploaded {
-  display: block !important;
-}
-
-.encryption_form--updated .encryption_text--img {
-  display: none !important;
-}
-
-.encryption_form--updated .encryption_text--text {
-  display: none;
-}
-
-.encryption_form--updated .encryption_input-text-wrap {
-  display: none !important;
-}
-
-.encryption_form--updated .encryption_input-file-wrap {
-  display: flex !important;
-}
-
-.encryption_form--updated .encryption_btn--key {
-  display: none;
-}
-
-.encryption_text-wrapper {
-  order: 2;
-}
-
-.encryption_header {
-  font-size: 20px;
-  margin-bottom: 10px;
-  text-align: center;
-  order: 1;
-}
-
-.encryption_text {
-  text-align: center;
-  font-size: 14px;
-  display: none;
-}
-
-.encryption_label {
-  font-size: 20px;
-}
-
-.encryption_label {
-  content: "dasads";
+.encryption--decipher .encryption_form--decipher {
+  display: grid;
 }
 
 .encryption_toggle-wrapper {
@@ -379,63 +200,120 @@ body {
   content: attr(data-off);
 }
 
-.encryption_input-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 500px 1fr;
-  align-items: center;
-  gap: 20px;
-  height: 300px;
-  background-image: url("./../img/key-hole.svg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 20%;
-  margin-bottom: 20px;
-}
-
-.encryption_input-text-wrapper--img {
-  background-size: 10%;
+.encryption_form {
+  display: none;
   grid-template-columns: 1fr 300px 1fr;
+  gap: 20px;
+  align-items: center;
+  position: relative;
 }
 
-.encryption_input-text-wrap {
+.encryption_form[data-step-count="1"] .encryption_form-step[data-step="1"] {
   display: flex;
 }
 
-.encryption_input-text {
-  width: 100%;
+.encryption_form[data-step-count="2"] .encryption_form-step[data-step="2"] {
+  display: flex;
 }
 
-.encryption_input {
+.encryption_form[data-step-count="3"] .encryption_form-step[data-step="3"] {
+  display: flex;
+}
+
+.encryption_form[data-step-count="1"] .encryption_form-btn--back {
+  display: none;
+}
+
+.encryption_form--encrypt[data-step-count="2"] .encryption_form-btn--next {
+  display: none;
+}
+
+.encryption_form--encrypt[data-step-count="2"].encryption_form--downloaded-pic .encryption_form-btn--next {
+  display: block;
+}
+
+.encryption_form--encrypt[data-step-count="3"] .encryption_form-btn--next {
+  display: none;
+}
+
+.encryption_form--decipher[data-step-count="1"] .encryption_form-btn--next {
+  display: none;
+}
+
+.encryption_form--decipher[data-step-count="2"] .encryption_form-btn--next {
+  display: none;
+}
+
+.encryption_form--decipher[data-step-count="1"].encryption_form--downloaded-pic1 .encryption_form-btn--next {
+  display: block;
+}
+
+.encryption_form--decipher[data-step-count="2"].encryption_form--downloaded-pic2 .encryption_form-btn--next {
+  display: block;
+}
+
+.encryption_form--decipher[data-step-count="3"] .encryption_form-btn--next {
+  display: none;
+}
+
+.encryption_form-step {
+  display: none;
+  flex-direction: column;
+  align-items: center;
   grid-column: 2 / 3;
 }
 
-.encryption_btn {
+.encryption_form-step-title {
+  order: 1;
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+
+.encryption_form-step-text {
+  order: 2;
+  text-align: center;
+  font-size: 14px;
+  min-height: 42px;
+}
+
+.encryption_form-input-wrap {
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.encryption_form-text-input {
+  width: 270px;
+}
+
+.encryption_form-btn {
   padding: 0 5px;
   display: flex;
   align-items: center;
   background: none;
   border: none;
   cursor: pointer;
-  grid-row: 1 / 2;
+  margin-bottom: 88px;
 }
 
-.encryption_btn:hover {
+.encryption_form-btn:hover {
   opacity: 0.6;
 }
 
-.encryption_btn:active {
+.encryption_form-btn:active {
   opacity: 0.3;
 }
 
-.encryption_btn--back {
+.encryption_form-btn--back {
   grid-column: 1 / 2;
-  display: none;
 }
 
-.encryption_btn--key {
+.encryption_form-btn--next {
+  grid-column: 3 / 4;
   -webkit-animation: name 1s infinite alternate ease-in;
   animation: name 1s infinite alternate ease-in;
-  grid-column: 3 / 4;
 }
 
 @-webkit-keyframes name {
@@ -456,28 +334,51 @@ body {
   }
 }
 
-.encryption_input-file-wrap {
-  grid-column: 2 / 3;
-  grid-row: 1 / 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+.encryption_form-key-hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -90%);
+  z-index: -1;
+}
+
+.encryption_form-downloaded-pic {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -72%);
+  position: absolute;
+  height: 180px;
+  width: 180px;
+  -o-object-fit: cover;
+  object-fit: cover;
+  border-radius: 36%;
+  border: 10px solid #0A3D2B;
+  display: none;
+}
+
+.encryption_form--downloaded-pic .encryption_form-downloaded-pic {
+  display: block;
+}
+
+.encryption_form--downloaded-pic1[data-step-count="1"] .encryption_form-downloaded-pic {
+  display: block;
+}
+
+.encryption_form--downloaded-pic2[data-step-count="2"] .encryption_form-downloaded-pic {
+  display: block;
+}
+
+.encryption_form-encrypt-pic {
+  height: 280px;
+  width: 280px;
+  -o-object-fit: cover;
+  object-fit: cover;
+  border-radius: 36%;
+  border: 10px solid #0A3D2B;
 }
 
 .header {
-  display: flex;
-  gap: 60px;
-  align-items: baseline;
   padding: 50px 75px;
-}
-
-.header_logo {
-  font-size: 30px;
-}
-
-.header_logo--accent {
-  color: #96E4DF;
 }
 
 .info {
@@ -726,17 +627,65 @@ body {
   opacity: 0.3;
 }
 
+.logo {
+  font-size: 36px;
+  cursor: default;
+}
+
+.logo_accent {
+  color: #96E4DF;
+}
+
+.main-nav {
+  display: flex;
+  align-items: baseline;
+  gap: 80px;
+}
+
 .main-nav_list {
   display: flex;
-  gap: 60px;
   align-items: center;
-  font-size: 24px;
+  gap: 60px;
+  font-size: 25px;
+}
+
+.main-nav_link {
+  padding: 5px;
 }
 
 .page {
-  background-image: linear-gradient(120deg, #016753, #19E48B);
-  background-size: 100vw 100vh;
-  background-attachment: fixed;
+  min-height: 100vh;
+  background-image: linear-gradient(120deg, #016751, #2DB97B);
+  color: white;
+}
+
+.toggle {
+  position: relative;
+  -webkit-appearance: none;
+  outline: none;
+  width: 40px;
+  height: 20px;
+  background-color: white;
+  border: 3px solid white;
+  border-radius: 10px;
+  transition-duration: 0.5s;
+  cursor: pointer;
+}
+
+.toggle::after {
+  transition-duration: 0.5s;
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  background-color: #043D2A;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+}
+
+.toggle:checked::after {
+  width: 36px;
 }
 
 /*# sourceMappingURL=main.css.map */

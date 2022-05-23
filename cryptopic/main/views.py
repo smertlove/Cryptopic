@@ -27,3 +27,12 @@ def req(request):
     bytes(front_body["text"], encoding="utf-8"),
     bytes(name, encoding="utf-8"))
     return JsonResponse(front_body, content_type="application/json")
+
+
+
+
+
+
+#   <script src="{% static 'main/js/app-libs.js' %}" charset="utf-8"></script>
+#   <script src="{% static 'main/js/app.js' %}" charset="utf-8"></script>
+# <script src="{% static 'main/js/app-modernizr.js' %}"></script>

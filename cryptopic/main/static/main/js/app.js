@@ -1,225 +1,226 @@
-let btnEncryptionToggle = document.querySelector(".encryption_toggle");
-let formEncription = document.querySelector(".encryption_form");
-let encryptionInputText = document.querySelector(".encryption_input-text");
-let encryptionInputFile = document.querySelector(".encryption_input-file");
-let encryptionBtnKey = document.querySelector(".encryption_btn--key");
-let encryptionBtnBack = document.querySelector(".encryption_btn--back");
+let encryption = document.querySelector(".encryption");
+
+let encryptionToggle = document.querySelector(".encryption_toggle");
+
+encryption.classList.remove("encryption--encrypt");
+encryption.classList.remove("encryption--decipher");
+
+if (encryptionToggle.checked) {
+  encryption.classList.add("encryption--decipher");
+} else {
+  encryption.classList.add("encryption--encrypt");
+}
+
+encryptionToggle.addEventListener("click", function() {
+  encryption.classList.remove("encryption--encrypt");
+  encryption.classList.remove("encryption--decipher");
+
+  if (encryptionToggle.checked) {
+    encryption.classList.add("encryption--decipher");
+  } else {
+    encryption.classList.add("encryption--encrypt");
+  }
+});
+
+
 
 let encryptionData = {
-  operation: "",
-  text: "",
-  picture: "",
-  picture_length: "",
-  picture_type: "",
-}
-let toggleTypeEncryption = function() {
-  toggleTypeEncryptionClass();
-  cleanEncryptionForm();
-  removeUploadedPic();
-}
-
-let toggleTypeEncryptionClass = function() {
-  formEncription.classList.toggle("encryption_form--encrypt");
-  formEncription.classList.toggle("encryption_form--decipher");
-}
-
-let cleanEncryptionForm = function() {
-  encryptionInputText.value = "";
-  encryptionInputFile.value = "";
-}
-
-let showUploadedPic = function(evt) {
-  if (encryptionInputFile.value != "") {
-    formEncription.classList.add("encryption_form--uploaded");
-  }
-
-  let reader = new FileReader();
-
-  reader.onload = function(e) {
-
-    var img = document.createElement('img');
-
-    img.onload = function() {
-      console.log(this.width+'x'+this.height);
-    };
-
-    img.src = e.target.result;
-  }
-}
-let removeUploadedPic = function() {
-  formEncription.classList.remove("encryption_form--uploaded");
-}
-let getPic = function() {
-  let reader = new FileReader();
-  reader.readAsDataURL(encryptionInputFile.files[0])
-
-  let createImg = function(evt) {
-    let img = document.createElement('img');
-
-    encryptionData.picture = evt.target.result;
-
-    img.src = evt.target.result;
-    img.className = "encryption_input-img";
-    document.querySelector(".encryption_input-img-wrap").append(img);
-    encryptionData.picture_type = img.src.slice(img.src.indexOf("/") + 1, img.src.indexOf(";"));
-
-    let showSize = function() {
-      encryptionData.picture_length = img.width * img.height;
-    };
-
-    img.addEventListener("load", showSize);
-  }
-
-  reader.addEventListener("load", createImg);
-}
-let updateSrcImg = function(newSrc) {
-  goNextStep();
-  document.querySelector('.encryption_form').classList.add("encryption_form--updated");
-  document.querySelector('.encryption_input-img').src = newSrc;
-}
-let showText = function(text) {
-  goNextStep();
-  document.querySelector('.encryption_input-text').value = text;
-}
-let tapEncryptionBtnKey = function(evt) {
-  evt.preventDefault();
-
-  if (getTypeEncryption() == 'encrypt') {
-    if (getStepEncryption() == 1) {
-      goNextStep();
-    } else {
-      encryptionData.operation = 'encrypt';
-      encryptionData.text = encryptionInputText.value;
-      let cookie = document.cookie;
-      let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
-      console.log('ushlo na servak\n', encryptionData);
-      fetch(
-        '/req',
-        // 'https://jsonplaceholder.typicode.com/posts',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With' : 'XMLHttpRequest',
-            'X-CSRFToken': csrfToken
-          },
-          body: JSON.stringify(encryptionData),
-        })
-        .then((response) => response.json())
-        .then((json) => updateSrcImg(json.picture));
+  addPicture(data, width, height, type, count = "") {
+    this["picture" + count] = {
+      data: data,
+      width: width,
+      height: height,
+      type: type,
     }
-  }
-  if (getTypeEncryption() == 'decipher') {
-    encryptionData.operation = 'decipher';
-    delete encryptionData.text;
+  },
+  addMessage(text) {
+    this.messege = text;
+  },
+  addOperationType(type) {
+    this.operationType = type;
+  },
+}
+let formEncrypt = document.querySelector(".encryption_form--encrypt");
+
+let encryptBtnNext = formEncrypt.querySelector(".encryption_form-btn--next");
+let encryptBtnBack = formEncrypt.querySelector(".encryption_form-btn--back");
+
+let formEncryptSteps = formEncrypt.querySelectorAll(".encryption_form-step");
+let formEncryptStepsArray = Array.from(formEncryptSteps);
+
+let encryptPic = formEncrypt.querySelector(".encryption_form-encrypt-pic");
+
+let encryptGoNextStep = function () {
+  if (formEncrypt.dataset.stepCount == 1) {
+    formEncrypt.dataset.stepCount = +formEncrypt.dataset.stepCount + 1;
+  } else if (formEncrypt.dataset.stepCount == 2) {
     let cookie = document.cookie;
     let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
     fetch(
-      '/req',
-      // 'https://jsonplaceholder.typicode.com/posts',
+      // '/req',
+      'https://jsonplaceholder.typicode.com/posts',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Requested-With' : 'XMLHttpRequest',
           'X-CSRFToken': csrfToken
         },
         body: JSON.stringify(encryptionData),
       })
       .then((response) => response.json())
-      .then((json) => showText(json.picture_length));
+      .then((json) => encryptPic.src = json.picture.data);
+      formEncrypt.dataset.stepCount = +formEncrypt.dataset.stepCount + 1;
   }
 }
-
-let getTypeEncryption = function() {
-  if (formEncription.classList.contains('encryption_form--encrypt')) {
-    return 'encrypt';
-  }
-  return 'decipher';
-}
-let getStepEncryption = function() {
-  if (formEncription.classList.contains('encryption_form--step-1')) {
-    return 1;
-  }
-  return 2;
+let encryptGoBackStep = function () {
+  formEncrypt.dataset.stepCount = +formEncrypt.dataset.stepCount - 1;
 }
 
-let goNextStep = function() {
-  numberStep = +formEncription.className.split("encryption_form--step-")[1][0];
+encryptBtnNext.addEventListener("click", encryptGoNextStep);
+encryptBtnBack.addEventListener("click", encryptGoBackStep);
 
-  formEncription.classList.remove("encryption_form--step-1");
-  formEncription.classList.remove("encryption_form--step-2");
-  formEncription.classList.add(`encryption_form--step-${numberStep + 1}`);
-}
-let goPreviousStep = function() {
-  numberStep = +formEncription.className.split("encryption_form--step-")[1][0];
+let formEncryptInputFile = formEncrypt.querySelector(".encryption_form-picture-input");
+let formEncryptInputText = formEncrypt.querySelector(".encryption_form-text-input");
+let formEncryptImage = formEncrypt.querySelector(".encryption_form-downloaded-pic");
 
-  formEncription.classList.remove("encryption_form--step-3");
-  formEncription.classList.remove("encryption_form--step-2");
-  formEncription.classList.add(`encryption_form--step-${numberStep - 1}`);
+let toggleDownloadedPic = function(form, countPic = "") {
+  form.classList.add(`encryption_form--downloaded-pic${countPic}`);
 }
 
+let convertBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
 
+    fileReader.onload = () => {
+      resolve(fileReader.result);
+    };
 
-btnEncryptionToggle.addEventListener("click", toggleTypeEncryption);
-encryptionInputFile.addEventListener("change", showUploadedPic);
-encryptionInputFile.addEventListener("change", getPic);
-encryptionBtnKey.addEventListener("click", tapEncryptionBtnKey);
-encryptionBtnBack.addEventListener("click", goPreviousStep);
+    fileReader.onerror = (error) => {
+      reject(error);
+    };
+  });
+};
 
+let uploadImage = async (event, image) => {
+  const file = event.target.files[0];
+  const base64 = await convertBase64(file);
+  image.src = base64;
+};
 
-//раздел info
+let declareDataEncrypt = function(image, messege) {
+  let imageWidth = image.naturalWidth;
+  let imageHeight = image.naturalHeight;
+  let imageType = image.src.slice(image.src.indexOf("/") + 1, image.src.indexOf(";"));
 
-let info = document.querySelector('.info');
-let infoHowEncrypt = info.querySelector('.info_how--encrypt');
-let schemeEncrypt = infoHowEncrypt.querySelector('.info_how-scheme');
-let schemeEncryptIcons = schemeEncrypt.querySelectorAll('.info_how-scheme-icon');
-let schemeEncryptIconsArr = Array.from(schemeEncryptIcons);
-let schemeEncryptTexts = infoHowEncrypt.querySelectorAll('.info_how-text');
-let schemeEncryptTextsArr = Array.from(schemeEncryptTexts);
+  encryptionData.addPicture(image.src, imageWidth, imageHeight, imageType);
+  encryptionData.addMessage(messege);
+  encryptionData.addOperationType("encrypt");
+}
 
-schemeEncrypt.addEventListener('click', function(event) {
-  let icon = event.target.closest(".info_how-scheme-icon");
-
-  if (icon) {
-    for (let icon of schemeEncryptIconsArr) {
-      icon.classList.remove("info_how-scheme-icon--active");
-    }
-    icon.classList.add("info_how-scheme-icon--active");
-
-    let iconNum = icon.dataset.count;
-
-    for (let text of schemeEncryptTextsArr) {
-      text.classList.remove("info_how-text--active");
-    }
-    infoHowEncrypt.querySelector(`.info_how-text--${iconNum}`).classList.add("info_how-text--active");
-  }
+formEncryptInputFile.addEventListener("change", (e) => {
+  uploadImage(e, formEncryptImage);
+  toggleDownloadedPic(formEncrypt);
+  formEncryptImage.onload = function() {
+    declareDataEncrypt(formEncryptImage, formEncryptInputText.value);
+  };
 });
 
-let infoHowDecipher = info.querySelector('.info_how--decipher');
-let schemeDecipher = infoHowDecipher.querySelector('.info_how-scheme');
-let schemeDecipherIcons = schemeDecipher.querySelectorAll('.info_how-scheme-icon');
-let schemeDecipherIconsArr = Array.from(schemeDecipherIcons);
-let schemeDecipherTexts = infoHowDecipher.querySelectorAll('.info_how-text');
-let schemeDecipherTextsArr = Array.from(schemeDecipherTexts);
 
-schemeDecipher.addEventListener('click', function(event) {
-  let icon = event.target.closest(".info_how-scheme-icon");
 
-  if (icon) {
-    for (let icon of schemeDecipherIconsArr) {
-      icon.classList.remove("info_how-scheme-icon--active");
-    }
-    icon.classList.add("info_how-scheme-icon--active");
 
-    let iconNum = icon.dataset.count;
 
-    for (let text of schemeDecipherTextsArr) {
-      text.classList.remove("info_how-text--active");
-    }
-    infoHowDecipher.querySelector(`.info_how-text--${iconNum}`).classList.add("info_how-text--active");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let formDecipher = document.querySelector(".encryption_form--decipher");
+
+let decipherBtnNext = formDecipher.querySelector(".encryption_form-btn--next");
+let decipherBtnBack = formDecipher.querySelector(".encryption_form-btn--back");
+let formDecipherSteps = formDecipher.querySelectorAll(".encryption_form-step");
+let formDecipherStepsArray = Array.from(formDecipherSteps);
+
+let encryptText = formDecipher.querySelector(".encryption_form-text-input");
+
+let decipherGoNextStep = function () {
+  if (formDecipher.dataset.stepCount == 1) {
+    formDecipher.dataset.stepCount = +formDecipher.dataset.stepCount + 1;
+  } else if (formDecipher.dataset.stepCount == 2) {
+    let cookie = document.cookie;
+    let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
+    fetch(
+      // '/req',
+      'https://jsonplaceholder.typicode.com/posts',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With' : 'XMLHttpRequest',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(encryptionData),
+      })
+      .then((response) => response.json())
+      .then((json) => encryptText.value = json.messege);
+      formDecipher.dataset.stepCount = +formDecipher.dataset.stepCount + 1;
   }
-});
+}
+let decipherGoBackStep = function () {
+  formDecipher.dataset.stepCount = +formDecipher.dataset.stepCount - 1;
+}
 
-//# sourceMappingURL=app.js.map
+decipherBtnNext.addEventListener("click", decipherGoNextStep);
+decipherBtnBack.addEventListener("click", decipherGoBackStep);
+
+let formDecipherInputFileFirst = formDecipher.querySelector(".encryption_form-step[data-step='1'] .encryption_form-picture-input");
+let formDecipherImageFirst = formDecipher.querySelector(".encryption_form-step[data-step='1'] .encryption_form-downloaded-pic");
+
+let formDecipherInputFileSecond = formDecipher.querySelector(".encryption_form-step[data-step='2'] .encryption_form-picture-input");
+let formDecipherImageSecond = formDecipher.querySelector(".encryption_form-step[data-step='2'] .encryption_form-downloaded-pic");
+
+let declareDataDecipher = function(imageFirst, imageSecond) {
+  encryptionData.addOperationType("decipher");
+
+  let imageFirstWidth = imageFirst.naturalWidth;
+  let imageFirstHeight = imageFirst.naturalHeight;
+  let imageFirstType = imageFirst.src.slice(imageFirst.src.indexOf("/") + 1, imageFirst.src.indexOf(";"));
+
+  encryptionData.addPicture(imageFirst.src, imageFirstWidth, imageFirstHeight, imageFirstType, 1);
+
+  let imageSecondWidth = imageSecond.naturalWidth;
+  let imageSecondHeight = imageSecond.naturalHeight;
+  let imageSecondType = imageSecond.src.slice(imageSecond.src.indexOf("/") + 1, imageSecond.src.indexOf(";"));
+  encryptionData.addPicture(imageSecond.src, imageSecondWidth, imageSecondHeight, imageSecondType, 2);
+}
+
+formDecipherInputFileFirst.addEventListener("change", (e) => {
+  uploadImage(e, formDecipherImageFirst);
+  toggleDownloadedPic(formDecipher, 1);
+});
+formDecipherInputFileSecond.addEventListener("change", (e) => {
+  uploadImage(e, formDecipherImageSecond);
+  toggleDownloadedPic(formDecipher, 2);
+  formDecipherImageSecond.onload = function() {
+    declareDataDecipher(formDecipherImageFirst, formDecipherImageSecond);
+  };
+});
 
 //# sourceMappingURL=app.js.map
