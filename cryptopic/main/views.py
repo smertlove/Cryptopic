@@ -24,6 +24,6 @@ def req(request):
     name = ''.join(list(map(str, [randint(1, 7) for _ in range(10)])))
     front_body = json.loads(request.body.decode('utf-8'))
     pic = lib.call_manage_data(bytes(front_body["picture"], encoding="utf-8"),
-     bytes(front_body["text"], encoding="utf-8"),
-     bytes(name, encoding="utf-8"))
+    bytes(front_body["text"], encoding="utf-8"),
+    bytes(name, encoding="utf-8"))
     return JsonResponse(front_body, content_type="application/json")
