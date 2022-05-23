@@ -1,6 +1,7 @@
 .vscode/
 build/
 output_imgs/
+output_encoded/
 cryptopic/main/cpp_services/bin/
 opencv-4.x/
 opencv.zip
