@@ -34,7 +34,7 @@ let encryptionData = {
     }
   },
   addMessage(text) {
-    this.messege = text;
+    this.message = text;
   },
   addOperationType(type) {
     this.operationType = type;
@@ -56,9 +56,10 @@ let encryptGoNextStep = function () {
   } else if (formEncrypt.dataset.stepCount == 2) {
     let cookie = document.cookie;
     let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
+    console.log(encryptionData);
     fetch(
-      // '/req',
-      'https://jsonplaceholder.typicode.com/posts',
+      '/req',
+      // 'https://jsonplaceholder.typicode.com/posts',
       {
         method: 'POST',
         headers: {
@@ -167,8 +168,8 @@ let decipherGoNextStep = function () {
     let cookie = document.cookie;
     let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
     fetch(
-      // '/req',
-      'https://jsonplaceholder.typicode.com/posts',
+      '/req',
+      // 'https://jsonplaceholder.typicode.com/posts',
       {
         method: 'POST',
         headers: {
