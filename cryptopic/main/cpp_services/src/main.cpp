@@ -15,6 +15,7 @@
 #include <vector>
 #include <random>
 
+
 // open sorce
 #include "Base64.h"
 #include "lsb_encryptor.hpp"
@@ -38,20 +39,27 @@ enum steg_manager_to_call {
     ERR_MANAGER = -1
 };
 
+#define INVALID_OPERATION_TYPE "ERROR: INVALID OPERATION TYPE"
+#define INVALID_STEG_MANAGER   "ERROR: INVALID STEGANOGRAPHY FUNC CALLED"
+
+
+
+
+
 int get_operation_type(char* operation_type) {
-    if (strcmp(operation_type, "decipher")) {
+    if (!strcmp(operation_type, "decipher")) {
         return DECRYPT;
-    } else if (strcmp(operation_type, "encrypt")) {
+    } else if (!strcmp(operation_type, "encrypt")) {
         return ENCRYPT;
     } else {
         return ERR_TYPE;
     }
 }
 
-int get_img_extension(char* extension_type) {
-    if (strcmp(extension_type, "png") || strcmp(extension_type, "bmp")) {
+int get_steg_manager_to_call(char* extension_type) {
+    if (!strcmp(extension_type, ".png") || !strcmp(extension_type, ".bmp")) {
         return LSB;
-    } else if (strcmp(extension_type, "jpg") || strcmp(extension_type, "jpeg")) {
+    } else if (!strcmp(extension_type, ".jpg") || !strcmp(extension_type, ".jpeg") || !strcmp(extension_type, ".jfif")) {
         return DCT;
     } else {
         return ERR_MANAGER;
@@ -83,49 +91,157 @@ std::string decode_img(char* b64_img, Base64 *b64_manager) {
     return img_decoded;
 }
 
-char* encrypt(std::string filename, Base64* B64Manager, char* txt) {
-    cv::Mat matrix_img = cv::imread("../output_imgs/" + filename);
-    matrix_img = encode_lsb(matrix_img, std::string(txt));
-
-    cv::imwrite("../output_encoded/" + filename, matrix_img);
-    std::cout << "finish encoding" << std::endl;
-
-    std::vector<uchar> buf;
-    cv::imencode(".png", matrix_img, buf);
-    std::string enc_msg(buf.begin(), buf.end());
-    std::string encoded = B64Manager->Encode(enc_msg);
-    char* answ = const_cast<char*>(encoded.c_str());
-    std::cout << strlen(answ) << std::endl;
-    return answ;
+std::string get_b64_meta_data(char* b64_str) {
+    std::string meta;
+    char* ptr = b64_str;
+    while (*ptr != ',') {
+        meta += *ptr;
+        ++ptr;
+    }
+    meta += *ptr;
+    std::cout << "meta: " << meta << std::endl;
+    return meta;
 }
 
-extern "C" {
-    char* call_manage_data(char* operation_type, char* b64_img, char* txt, char* img_extension) {
+std::string encrypt(int steg_manager, std::string filename, Base64* B64Manager, char* txt, std::string img_extension, std::string meta) {
+    std::cout << "------------> " << "../output_imgs/" + (filename + img_extension) << std::endl;
+    cv::Mat matrix_img = cv::imread("../output_imgs/" + (filename + img_extension));
+    
 
-        // init b64 manager
+    switch (steg_manager) {
+    case 1:  // LSB
+        std::cout << "CALL LSB" << std::endl;
+        matrix_img = encode_lsb(matrix_img, std::string(txt) + "!-$ex$y-!");
+        break;
+    case 2:  // DCT
+        std::cout << "CALL DCT" << std::endl;
+        matrix_img = encode_dct(matrix_img, std::string(txt) + "!-$ex$y-!");
+        break;
+    default:
+        return INVALID_STEG_MANAGER;
+    }
+    std::cout << "encryption: SUCCESS" << std::endl;
+
+    cv::imwrite("../output_encoded/" + (filename + img_extension), matrix_img);
+    // std::cout << "finish encoding" << std::endl;
+
+    std::vector<uchar> buf;
+    cv::imencode(img_extension, matrix_img, buf);
+    std::string enc_msg(buf.begin(), buf.end());
+
+    std::cout << "finish encryption process" << std::endl;
+
+    std::cout << "writing to file:" << std::endl;
+    std::string fn = filename + ".txt";
+    std::ofstream fout;
+    fout.open("../output_b64/" + fn);
+    fout << (meta + B64Manager->Encode(enc_msg));
+    fout.close();
+    std::cout << "done" << std::endl;
+
+
+    // return (meta + B64Manager->Encode(enc_msg)).c_str();
+    return fn;
+}
+
+std::string decrypt(int steg_manager, std::string filename, Base64* B64Manager, std::string img_extension, std::string meta) {
+    cv::Mat matrix_img = cv::imread("../output_imgs/" + (filename + img_extension));
+    std::string answ;
+    switch (steg_manager) {
+        case 1:  // LSB
+            std::cout << "CALL LSB" << std::endl;
+            answ = decode_lsb(matrix_img);
+            break;
+        case 2:  // DCT
+            std::cout << "CALL DCT" << std::endl;
+            answ = decode_dct(matrix_img);
+            break;
+        default:
+            return INVALID_STEG_MANAGER;
+    }
+
+    // char* answ = decode_lsb(matrix_img);
+
+    // cv::imwrite("../output_encoded/" + filename, matrix_img);
+    // std::cout << "finish encoding" << std::endl;
+
+    // std::vector<uchar> buf;
+    // cv::imencode(img_extension, matrix_img, buf);
+    // std::string enc_msg(buf.begin(), buf.end());
+    // std::string encoded = B64Manager->Encode(enc_msg);
+    // answ.erase(answ.find("!-$ex$y-!"));
+    
+    std::cout << "writing to file:" << std::endl;
+    std::string fn = filename + ".txt";
+    std::ofstream fout;
+    fout.open("../output_b64/" + fn);
+    fout << std::string(answ.begin(), answ.begin() + answ.find("!-$ex$y-!"));
+    fout.close();
+    std::cout << "done" << std::endl;
+
+    
+    
+    return answ.c_str();
+}
+
+
+
+
+
+
+
+
+
+
+
+extern "C" {
+    // main func
+    void call_manage_data(char* operation_type, char* b64_img, char* txt, char* img_extension, char* filename) {
+
+        std::string filename_      = std::string(filename);
+        std::string img_extension_ = std::string(img_extension);
+
+        std::cout << "------------> " << filename_ << img_extension_ << std::endl;
+
+        // get operation type
+        int operation = get_operation_type(operation_type);
+        std::cout << "get operation type: success" << operation << std::endl;
+
+        // choose steg func
+        int steg_manager = get_steg_manager_to_call(img_extension);
+
+        // decode b64
         Base64 *B64Manager = new Base64();
-        std::cout << strlen(b64_img) << std::endl;
-        // call decoder
+        std::string meta = get_b64_meta_data(b64_img);
         std::string img_decoded = decode_img(b64_img, B64Manager);
+        std::cout << "decode b64 img: success" << std::endl;
+
 
         // save img with random name
         std::ofstream fout;
-        std::string filename = get_random_name(65, 90, 20) + ".png";
+        std::string initial_img_fname = filename_ + img_extension_;
 
-        fout.open("../output_imgs/" + filename, std::ios::app |std::ios::binary);
-        std::cout << "save" << std::endl;
+        fout.open("../output_imgs/" + initial_img_fname, std::ios::app |std::ios::binary);
         fout << img_decoded;
         fout.close();
+        std::cout << "save decoded img: success" << std::endl;
 
         // magic happens!!
-        char *answ = encrypt(filename, B64Manager, txt);
-        // remove("../output_imgs/fff.txt");
-
-        return answ;
+        if (operation == 1) {
+            std::cout << "calling encrypt..." << std::endl;
+            // delete B64Manager;
+            const char* answ = encrypt(steg_manager, filename_, B64Manager, txt, img_extension_, meta).c_str();
+            // return encrypt(steg_manager, filename, B64Manager, txt, img_extension, meta).c_str();
+        } else if (operation == 2) {
+            std::cout << "calling decrypt..." << std::endl;
+            const char* answ = decrypt(steg_manager, filename_, B64Manager, img_extension_, meta).c_str();
+            // delete B64Manager;
+            std::cout << answ << std::endl;
+            // return answ;
+        } else {
+            // return INVALID_OPERATION_TYPE;
+        }
     }
 }
 
 
-// char* decrypt() {
-
-// }

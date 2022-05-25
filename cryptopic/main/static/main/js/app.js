@@ -167,6 +167,7 @@ let decipherGoNextStep = function () {
   } else if (formDecipher.dataset.stepCount == 2) {
     let cookie = document.cookie;
     let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
+    console.log(encryptionData);
     fetch(
       '/req',
       // 'https://jsonplaceholder.typicode.com/posts',
@@ -204,12 +205,12 @@ let declareDataDecipher = function(imageFirst, imageSecond) {
   let imageFirstHeight = imageFirst.naturalHeight;
   let imageFirstType = imageFirst.src.slice(imageFirst.src.indexOf("/") + 1, imageFirst.src.indexOf(";"));
 
-  encryptionData.addPicture(imageFirst.src, imageFirstWidth, imageFirstHeight, imageFirstType, 1);
+  encryptionData.addPicture(imageFirst.src, imageFirstWidth, imageFirstHeight, imageFirstType);
 
   let imageSecondWidth = imageSecond.naturalWidth;
   let imageSecondHeight = imageSecond.naturalHeight;
   let imageSecondType = imageSecond.src.slice(imageSecond.src.indexOf("/") + 1, imageSecond.src.indexOf(";"));
-  encryptionData.addPicture(imageSecond.src, imageSecondWidth, imageSecondHeight, imageSecondType, 2);
+  // encryptionData.addPicture(imageSecond.src, imageSecondWidth, imageSecondHeight, imageSecondType, 2);
 }
 
 formDecipherInputFileFirst.addEventListener("change", (e) => {

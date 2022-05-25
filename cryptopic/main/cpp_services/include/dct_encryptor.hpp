@@ -1,7 +1,7 @@
 #pragma once
 #include <opencv2/core/core.hpp>
 
-#include "encryptor_consts.h"
+#include "encryptor_consts.hpp"
 /*!
  * Uses discrete cosine transformation to hide data in the coefficients of a channel of an image.
  *

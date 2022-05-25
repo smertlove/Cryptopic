@@ -1,7 +1,7 @@
 #pragma once
 #include <opencv2/core/core.hpp>
 
-#include "encryptor_consts.h"
+#include "encryptor_consts.hpp"
 /*!
  * Hides data in an image by manipulating the least significant bits of each pixel.
  *
@@ -18,9 +18,10 @@
 
 inline cv::Mat encode_lsb(const cv::Mat& img, const std::string& text, int mode = STORE_ONCE)
 {
+	
 	using namespace cv;
 	using namespace std;
-
+cout << "enter func" << endl;
 	int b = 0;
 	int bits = text.length() * 8 + 7;
 
@@ -68,7 +69,7 @@ inline cv::Mat encode_lsb(const cv::Mat& img, const std::string& text, int mode 
 			break;
 		}
 	}
-
+cout << "finish func" << endl;
 	return stego;
 }
 
