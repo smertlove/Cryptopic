@@ -47,9 +47,9 @@ enum steg_manager_to_call {
 
 
 int get_operation_type(char* operation_type) {
-    if (!strcmp(operation_type, "decipher")) {
+    if (!strcmp(operation_type, "decipher-text") || !strcmp(operation_type, "decipher-file")) {
         return DECRYPT;
-    } else if (!strcmp(operation_type, "encrypt")) {
+    } else if (!strcmp(operation_type, "encrypt-text") || !strcmp(operation_type, "encrypt-text")) {
         return ENCRYPT;
     } else {
         return ERR_TYPE;
@@ -132,12 +132,17 @@ std::string encrypt(int steg_manager, std::string filename, Base64* B64Manager, 
     std::cout << "finish encryption process" << std::endl;
 
     std::cout << "writing to file:" << std::endl;
+    std::cout << "make filename" << std::endl;
     std::string fn = filename + ".txt";
+    std::cout << "OK. make file obj" << std::endl;
     std::ofstream fout;
+    std::cout << "OK. open it" << std::endl;
     fout.open("../output_b64/" + fn);
+    std::cout << "OK. write to it" << std::endl;
     fout << (meta + B64Manager->Encode(enc_msg));
+    std::cout << "OK. close it" << std::endl;
     fout.close();
-    std::cout << "done" << std::endl;
+    std::cout << "done writing" << std::endl;
 
 
     // return (meta + B64Manager->Encode(enc_msg)).c_str();

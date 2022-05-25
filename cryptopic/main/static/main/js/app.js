@@ -153,7 +153,7 @@ let uploadImage = async (event, image) => {
   image.src = base64;
 };
 
-let declareDataEncrypt = function(image, compressImgSrc, message) {
+let declareDataEncrypt = function(image, message) {
   let imageWidth = image.naturalWidth;
   let imageHeight = image.naturalHeight;
   let imageType = image.src.slice(image.src.indexOf("/") + 1, image.src.indexOf(";"));
