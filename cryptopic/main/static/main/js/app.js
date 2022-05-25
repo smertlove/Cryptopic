@@ -12,8 +12,9 @@ if (encryptionToggle.checked) {
 }
 
 encryptionToggle.addEventListener("click", function() {
-  encryption.classList.remove("encryption--encrypt");
-  encryption.classList.remove("encryption--decipher");
+  encryption.className = "encryption";
+  encryptToggleFileText.textContent = "текст";
+  decipherToggleFileText.textContent = "текст";
 
   if (encryptionToggle.checked) {
     encryption.classList.add("encryption--decipher");
@@ -23,15 +24,48 @@ encryptionToggle.addEventListener("click", function() {
 });
 
 
+encryptToggleFileText = document.querySelector(".encryption_toggle-label--encrypt .encryption_toggle-label-btn--text");
+
+encryptToggleFileText.addEventListener("click", function() {
+  encryption.className = "encryption";
+  if (encryptToggleFileText.textContent == "текст") {
+    encryptToggleFileText.textContent = "файл";
+    encryption.classList.add("encryption--encrypt-file");
+  } else if (encryptToggleFileText.textContent == "файл") {
+    encryptToggleFileText.textContent = "текст";
+    encryption.classList.add("encryption--encrypt");
+  }
+});
+
+decipherToggleFileText = document.querySelector(".encryption_toggle-label--decipher .encryption_toggle-label-btn--text");
+
+decipherToggleFileText.addEventListener("click", function() {
+  encryption.className = "encryption";
+  if (decipherToggleFileText.textContent == "текст") {
+    decipherToggleFileText.textContent = "файл";
+    encryption.classList.add("encryption--decipher-file");
+  } else if (decipherToggleFileText.textContent == "файл") {
+    decipherToggleFileText.textContent = "текст";
+    encryption.classList.add("encryption--decipher");
+  }
+});
+
 
 let encryptionData = {
-  addPicture(data, width, height, type, count = "") {
-    this["picture" + count] = {
+  file: {},
+  addPicture(data, width, height, type) {
+    this.picture = {
       data: data,
       width: width,
       height: height,
       type: type,
     }
+  },
+  addFileData(data) {
+    this.file.data = data;
+  },
+  addFileName(name) {
+    this.file.name = name;
   },
   addMessage(text) {
     this.message = text;
@@ -40,6 +74,11 @@ let encryptionData = {
     this.operationType = type;
   },
 }
+
+
+
+
+
 let formEncrypt = document.querySelector(".encryption_form--encrypt");
 
 let encryptBtnNext = formEncrypt.querySelector(".encryption_form-btn--next");
@@ -70,8 +109,12 @@ let encryptGoNextStep = function () {
         body: JSON.stringify(encryptionData),
       })
       .then((response) => response.json())
-      .then((json) => encryptPic.src = json.picture.data);
-      formEncrypt.dataset.stepCount = +formEncrypt.dataset.stepCount + 1;
+      .then((json) => {
+        encryptPic.src = json.picture.data;
+        console.log(json);
+        formEncrypt.dataset.stepCount = +formEncrypt.dataset.stepCount + 1;
+      });
+
   }
 }
 let encryptGoBackStep = function () {
@@ -110,14 +153,14 @@ let uploadImage = async (event, image) => {
   image.src = base64;
 };
 
-let declareDataEncrypt = function(image, messege) {
+let declareDataEncrypt = function(image, compressImgSrc, message) {
   let imageWidth = image.naturalWidth;
   let imageHeight = image.naturalHeight;
   let imageType = image.src.slice(image.src.indexOf("/") + 1, image.src.indexOf(";"));
 
   encryptionData.addPicture(image.src, imageWidth, imageHeight, imageType);
-  encryptionData.addMessage(messege);
-  encryptionData.addOperationType("encrypt");
+  encryptionData.addMessage(message);
+  encryptionData.addOperationType("encrypt-text");
 }
 
 formEncryptInputFile.addEventListener("change", (e) => {
@@ -141,33 +184,23 @@ formEncryptInputFile.addEventListener("change", (e) => {
 
 
 
+let formEncryptFile = document.querySelector(".encryption_form--encrypt-file");
 
+let encryptFileBtnNext = formEncryptFile.querySelector(".encryption_form-btn--next");
+let encryptFileBtnBack = formEncryptFile.querySelector(".encryption_form-btn--back");
 
+let formEncryptFileSteps = formEncryptFile.querySelectorAll(".encryption_form-step");
+let formEncryptFileStepsArray = Array.from(formEncryptSteps);
 
+let encryptFilePic = formEncryptFile.querySelector(".encryption_form-encrypt-pic");
 
-
-
-
-
-
-
-
-let formDecipher = document.querySelector(".encryption_form--decipher");
-
-let decipherBtnNext = formDecipher.querySelector(".encryption_form-btn--next");
-let decipherBtnBack = formDecipher.querySelector(".encryption_form-btn--back");
-let formDecipherSteps = formDecipher.querySelectorAll(".encryption_form-step");
-let formDecipherStepsArray = Array.from(formDecipherSteps);
-
-let encryptText = formDecipher.querySelector(".encryption_form-text-input");
-
-let decipherGoNextStep = function () {
-  if (formDecipher.dataset.stepCount == 1) {
-    formDecipher.dataset.stepCount = +formDecipher.dataset.stepCount + 1;
-  } else if (formDecipher.dataset.stepCount == 2) {
+let encryptFileGoNextStep = function () {
+  if (formEncryptFile.dataset.stepCount == 1) {
+    formEncryptFile.dataset.stepCount = +formEncryptFile.dataset.stepCount + 1;
+    console.log(encryptionData);
+  } else if (formEncryptFile.dataset.stepCount == 2) {
     let cookie = document.cookie;
     let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
-    console.log(encryptionData);
     fetch(
       '/req',
       // 'https://jsonplaceholder.typicode.com/posts',
@@ -181,9 +214,83 @@ let decipherGoNextStep = function () {
         body: JSON.stringify(encryptionData),
       })
       .then((response) => response.json())
-      .then((json) => encryptText.value = json.messege);
-      formDecipher.dataset.stepCount = +formDecipher.dataset.stepCount + 1;
+      .then((json) => {
+        encryptFilePic.src = json.picture.data
+        formEncryptFile.dataset.stepCount = +formEncryptFile.dataset.stepCount + 1;
+      });
+
   }
+}
+let encryptFileGoBackStep = function () {
+  formEncryptFile.dataset.stepCount = +formEncryptFile.dataset.stepCount - 1;
+}
+
+encryptFileBtnNext.addEventListener("click", encryptFileGoNextStep);
+encryptFileBtnBack.addEventListener("click", encryptFileGoBackStep);
+
+let formEncryptFileInputFile = formEncryptFile.querySelector(".encryption_form-step[data-step='1'] .encryption_form-picture-input");
+let formEncryptFileInputPic = formEncryptFile.querySelector(".encryption_form-step[data-step='2'] .encryption_form-picture-input");
+
+let formEncryptFileImage = formEncryptFile.querySelector(".encryption_form-step[data-step='2'] .encryption_form-downloaded-pic");
+
+let declareDataEncryptFile = function(image) {
+  let imageWidth = image.naturalWidth;
+  let imageHeight = image.naturalHeight;
+  let imageType = image.src.slice(image.src.indexOf("/") + 1, image.src.indexOf(";"));
+
+  encryptionData.addPicture(image.src, imageWidth, imageHeight, imageType);
+  encryptionData.addOperationType("encrypt-file");
+}
+
+formEncryptFileInputFile.addEventListener("change", (e) => {
+  formEncryptFile.classList.add("encryption_form--downloaded-file");
+
+  let files = formEncryptFileInputFile.files;
+  encryptionData.addFileName(files[0].name);
+  processFile(files[0], compressData, files[0].name + '.lz4');
+});
+
+formEncryptFileInputPic.addEventListener("change", (e) => {
+  uploadImage(e, formEncryptFileImage);
+  toggleDownloadedPic(formEncryptFile);
+  formEncryptFileImage.onload = function() {
+    declareDataDecipher(formEncryptFileImage);
+  };
+  console.log(encryptionData);
+});
+
+
+
+let formDecipher = document.querySelector(".encryption_form--decipher");
+
+let decipherBtnNext = formDecipher.querySelector(".encryption_form-btn--next");
+let decipherBtnBack = formDecipher.querySelector(".encryption_form-btn--back");
+let formDecipherSteps = formDecipher.querySelectorAll(".encryption_form-step");
+let formDecipherStepsArray = Array.from(formDecipherSteps);
+
+let encryptText = formDecipher.querySelector(".encryption_form-text-input");
+
+let decipherGoNextStep = function () {
+  let cookie = document.cookie;
+  let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
+  console.log(encryptionData);
+  fetch(
+    '/req',
+    // 'https://jsonplaceholder.typicode.com/posts',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With' : 'XMLHttpRequest',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify(encryptionData),
+    })
+    .then((response) => response.json())
+    .then((json) => {
+      encryptText.value = json.message;
+      formDecipher.dataset.stepCount = +formDecipher.dataset.stepCount + 1;
+    });
 }
 let decipherGoBackStep = function () {
   formDecipher.dataset.stepCount = +formDecipher.dataset.stepCount - 1;
@@ -192,36 +299,91 @@ let decipherGoBackStep = function () {
 decipherBtnNext.addEventListener("click", decipherGoNextStep);
 decipherBtnBack.addEventListener("click", decipherGoBackStep);
 
-let formDecipherInputFileFirst = formDecipher.querySelector(".encryption_form-step[data-step='1'] .encryption_form-picture-input");
-let formDecipherImageFirst = formDecipher.querySelector(".encryption_form-step[data-step='1'] .encryption_form-downloaded-pic");
+let formDecipherInputFile = formDecipher.querySelector(".encryption_form-step[data-step='1'] .encryption_form-picture-input");
+let formDecipherImage = formDecipher.querySelector(".encryption_form-step[data-step='1'] .encryption_form-downloaded-pic");
 
-let formDecipherInputFileSecond = formDecipher.querySelector(".encryption_form-step[data-step='2'] .encryption_form-picture-input");
-let formDecipherImageSecond = formDecipher.querySelector(".encryption_form-step[data-step='2'] .encryption_form-downloaded-pic");
+let declareDataDecipher = function(image) {
+  encryptionData.addOperationType("decipher-text");
 
-let declareDataDecipher = function(imageFirst, imageSecond) {
-  encryptionData.addOperationType("decipher");
+  let imageWidth = image.naturalWidth;
+  let imageHeight = image.naturalHeight;
+  let imageType = image.src.slice(image.src.indexOf("/") + 1, image.src.indexOf(";"));
 
-  let imageFirstWidth = imageFirst.naturalWidth;
-  let imageFirstHeight = imageFirst.naturalHeight;
-  let imageFirstType = imageFirst.src.slice(imageFirst.src.indexOf("/") + 1, imageFirst.src.indexOf(";"));
-
-  encryptionData.addPicture(imageFirst.src, imageFirstWidth, imageFirstHeight, imageFirstType);
-
-  let imageSecondWidth = imageSecond.naturalWidth;
-  let imageSecondHeight = imageSecond.naturalHeight;
-  let imageSecondType = imageSecond.src.slice(imageSecond.src.indexOf("/") + 1, imageSecond.src.indexOf(";"));
-  // encryptionData.addPicture(imageSecond.src, imageSecondWidth, imageSecondHeight, imageSecondType, 2);
+  encryptionData.addPicture(image.src, imageWidth, imageHeight, imageType);
 }
 
-formDecipherInputFileFirst.addEventListener("change", (e) => {
-  uploadImage(e, formDecipherImageFirst);
+formDecipherInputFile.addEventListener("change", (e) => {
+  uploadImage(e, formDecipherImage);
   toggleDownloadedPic(formDecipher, 1);
+  formDecipherImage.onload = function() {
+    declareDataDecipher(formDecipherImage);
+  };
 });
-formDecipherInputFileSecond.addEventListener("change", (e) => {
-  uploadImage(e, formDecipherImageSecond);
-  toggleDownloadedPic(formDecipher, 2);
-  formDecipherImageSecond.onload = function() {
-    declareDataDecipher(formDecipherImageFirst, formDecipherImageSecond);
+
+
+
+
+
+
+
+
+
+
+
+
+let formDecipherFile = document.querySelector(".encryption_form--decipher-file");
+
+let decipherFileBtnNext = formDecipherFile.querySelector(".encryption_form-btn--next");
+
+
+let decipherFileGoNextStep = function () {
+  let cookie = document.cookie;
+  let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
+  console.log(encryptionData);
+  fetch(
+    '/req',
+    // 'https://jsonplaceholder.typicode.com/posts',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With' : 'XMLHttpRequest',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify(encryptionData),
+    })
+    .then((response) => response.json())
+    .then((json) => {
+      fetch(json.file.data)
+      .then(res => res.blob())
+      .then(function(myBlob) {
+        let file = new File([myBlob], {type: 'octet/stream'});
+
+        processFile(file, decompressData);
+      });
+    });
+}
+
+decipherFileBtnNext.addEventListener("click", decipherFileGoNextStep);
+
+let formDecipherFileInputFile = formDecipherFile.querySelector(".encryption_form-step[data-step='1'] .encryption_form-picture-input");
+let formDecipherFileImage = formDecipherFile.querySelector(".encryption_form-step[data-step='1'] .encryption_form-downloaded-pic");
+
+let declareDataDecipherFile = function(image) {
+  encryptionData.addOperationType("decipher-file");
+
+  let imageWidth = image.naturalWidth;
+  let imageHeight = image.naturalHeight;
+  let imageType = image.src.slice(image.src.indexOf("/") + 1, image.src.indexOf(";"));
+
+  encryptionData.addPicture(image.src, imageWidth, imageHeight, imageType);
+}
+
+formDecipherFileInputFile.addEventListener("change", (e) => {
+  uploadImage(e, formDecipherFileImage);
+  toggleDownloadedPic(formDecipherFile, 1);
+  formDecipherFileImage.onload = function() {
+    declareDataDecipher(formDecipherFileImage);
   };
 });
 

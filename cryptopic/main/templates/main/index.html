@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="{% static 'main/css/main.css' %}">
-  <title>criptopic</title>
+  <title>cryptopic</title>
 </head>
 
 <body class="page">
@@ -33,8 +33,15 @@
           <use class="encryption_toggle-icon-lock" xlink:href="#icon-lock"/>
           <use class="encryption_toggle-icon-key" xlink:href="#icon-key"/>
         </svg>
-        <label class="encryption_toggle-label" for="encryption_toggle" data-off="зашифровать" data-on="расшифровать">
-          <span class="visuallyhidden">зашифровать или расшифровать</span>
+        <label class="encryption_toggle-label" for="encryption_toggle">
+          <span class="encryption_toggle-label--encrypt">
+            зашифровать
+            <button class="encryption_toggle-label-btn encryption_toggle-label-btn--text" type="button" name="button">текст</button>
+          </span>
+          <span class="encryption_toggle-label--decipher">
+            расшифровать
+            <button class="encryption_toggle-label-btn encryption_toggle-label-btn--text" type="button" name="button">текст</button>
+          </span>
         </label>
       </div>
       <form action="" class="encryption_form encryption_form--encrypt" data-step-count="1">
@@ -74,8 +81,71 @@
         <div class="encryption_form-step" data-step="3">
           <h2 class="encryption_form-step-title">3 шаг</h2>
           <p class="encryption_form-step-text">
-            скачайте<br>
+            сообщение<br>
+            звшифровано
+          </p>
+          <div class="encryption_form-input-wrap">
+            <img class="encryption_form-encrypt-pic" src="" alt="">
+          </div>
+        </div>
+        <button class="encryption_form-btn encryption_form-btn--next" type="button">
+          <span class="visuallyhidden">дальше</span>
+          <svg height="24" viewbox="0 0 24 24" width="24" fill="white">
+            <use xlink:href="#icon-key"/>
+          </svg>
+        </button>
+        <svg class="encryption_form-key-hole" height="118" width="239" viewbox="0 0 117.53 238.25">
+          <use xlink:href="#key-hole"/>
+        </svg>
+      </form>
+      <form action="" class="encryption_form encryption_form--encrypt-file" data-step-count="1">
+        <button class="encryption_form-btn encryption_form-btn--back" type="button">
+          <span class="visuallyhidden">назад</span>
+          <svg height="24" width="36" viewbox="0 6 48 36" fill="white">
+            <use xlink:href="#icon-arrow"/>
+          </svg>
+        </button>
+        <div class="encryption_form-step" data-step="1">
+          <h2 class="encryption_form-step-title">1 шаг</h2>
+          <p class="encryption_form-step-text">
+            прикрепите<br>
+            файл
+          </p>
+          <div class="encryption_form-input-wrap">
+            <input class="input-file encryption_form-picture-input" type="file" name="messege" placeholder="секретное сообщение">
+            <label class="encryption_input-file-label" for="file-input">
+              <svg class="encryption_input-file-border" height="300" width="300" viewbox="0 0 100 100">
+              	<use xlink:href="#dashed-border"/>
+              </svg>
+            </label>
+            <div class="encryption_form-downloaded-file">
+              <svg class="encryption_form-downloaded-file-icon" height="80" width="80" viewbox="0 0 48 48" fill="white">
+                <path d="M11 44Q9.8 44 8.9 43.1Q8 42.2 8 41V7Q8 5.8 8.9 4.9Q9.8 4 11 4H29.05L40 14.95V41Q40 42.2 39.1 43.1Q38.2 44 37 44ZM11 41H37Q37 41 37 41Q37 41 37 41V16.3H27.55V7H11Q11 7 11 7Q11 7 11 7V41Q11 41 11 41Q11 41 11 41ZM11 41Q11 41 11 41Q11 41 11 41V16.3V7Q11 7 11 7Q11 7 11 7V41Q11 41 11 41Q11 41 11 41Z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="encryption_form-step" data-step="2">
+          <h2 class="encryption_form-step-title">2 шаг</h2>
+          <p class="encryption_form-step-text">
+            прикрепите<br>
             изображение
+          </p>
+          <div class="encryption_form-input-wrap">
+            <input class="input-file encryption_form-picture-input" type="file" name="messege" placeholder="секретное сообщение">
+            <label class="encryption_input-file-label" for="file-input">
+              <svg class="encryption_input-file-border" height="300" width="300" viewbox="0 0 100 100">
+              	<use xlink:href="#dashed-border"/>
+              </svg>
+            </label>
+            <img class="encryption_form-downloaded-pic" src="" alt="">
+          </div>
+        </div>
+        <div class="encryption_form-step" data-step="3">
+          <h2 class="encryption_form-step-title">3 шаг</h2>
+          <p class="encryption_form-step-text">
+            файл<br>
+            звшифрован
           </p>
           <div class="encryption_form-input-wrap">
             <img class="encryption_form-encrypt-pic" src="" alt="">
@@ -102,8 +172,8 @@
           <h2 class="encryption_form-step-title">1 шаг</h2>
           <p class="encryption_form-step-text">
             прикрепите<br>
-            оригинальное<br>
-            изображение
+            изображение<br>
+            с сообщением
           </p>
           <div class="encryption_form-input-wrap">
             <input class="input-file encryption_form-picture-input" type="file" name="messege" placeholder="секретное сообщение">
@@ -118,9 +188,37 @@
         <div class="encryption_form-step" data-step="2">
           <h2 class="encryption_form-step-title">2 шаг</h2>
           <p class="encryption_form-step-text">
+            секретное<br>
+            сообщение<br>
+            из картинки
+          </p>
+          <div class="encryption_form-input-wrap">
+            <input class="input-text encryption_form-text-input" type="text" name="messege" placeholder="секретное сообщение">
+          </div>
+        </div>
+        <button class="encryption_form-btn encryption_form-btn--next" type="button">
+          <span class="visuallyhidden">дальше</span>
+          <svg height="24" viewbox="0 0 24 24" width="24" fill="white">
+            <use xlink:href="#icon-key"/>
+          </svg>
+        </button>
+        <svg class="encryption_form-key-hole" height="118" width="239" viewbox="0 0 117.53 238.25">
+          <use xlink:href="#key-hole"/>
+        </svg>
+      </form>
+      <form action="" class="encryption_form encryption_form--decipher-file" data-step-count="1">
+        <button class="encryption_form-btn encryption_form-btn--back" type="button">
+          <span class="visuallyhidden">назад</span>
+          <svg height="24" width="36" viewbox="0 6 48 36" fill="white">
+            <use xlink:href="#icon-arrow"/>
+          </svg>
+        </button>
+        <div class="encryption_form-step" data-step="1">
+          <h2 class="encryption_form-step-title">1 шаг</h2>
+          <p class="encryption_form-step-text">
             прикрепите<br>
             изображение<br>
-            с сообщением
+            с файлом
           </p>
           <div class="encryption_form-input-wrap">
             <input class="input-file encryption_form-picture-input" type="file" name="messege" placeholder="секретное сообщение">
@@ -130,17 +228,6 @@
               </svg>
             </label>
             <img class="encryption_form-downloaded-pic" src="" alt="">
-          </div>
-        </div>
-        <div class="encryption_form-step" data-step="3">
-          <h2 class="encryption_form-step-title">3 шаг</h2>
-          <p class="encryption_form-step-text">
-            секретное<br>
-            сообщение<br>
-            из картинки
-          </p>
-          <div class="encryption_form-input-wrap">
-            <input class="input-text encryption_form-text-input" type="text" name="messege" placeholder="секретное сообщение">
           </div>
         </div>
         <button class="encryption_form-btn encryption_form-btn--next" type="button">
@@ -247,7 +334,9 @@
       </g>
     </symbol>
   </svg>
-  <script src="{% static 'main/js/app.js' %}" charset="utf-8"></script>
+  <script src="{% static 'main/js/compressor/wasm_compressor.js' %}" charset="utf-8"></script>
+  <script src="{% static 'main/js/compressor/compressor.js' %}" charset="utf-8"></script>
+  <script src="{% static 'main/js/app.js' %}" charset="utf-8"></script> 
 </body>
 
 </html>

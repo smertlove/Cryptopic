@@ -46,8 +46,9 @@ def req(request):
     front_body = json.loads(request.body.decode('utf-8'))
     filename = get_random_filename(20)
 
-    if front_body["operationType"] == "encrypt":
-        print(1)
+    resp = {}  # responce
+
+    if front_body["operationType"] == "encrypt-text":
         lib.call_manage_data(
             bytes(front_body["operationType"], encoding="utf-8"),
             bytes(front_body["picture"]["data"], encoding="utf-8"),
@@ -55,15 +56,63 @@ def req(request):
             bytes("." + front_body["picture"]["type"], encoding="utf-8"),
             bytes(filename, encoding="utf-8")
         )
-    elif front_body["operationType"] == "decipher":
-        print(2)
+
+        file = open("../output_b64/"  + filename + ".txt")
+        resp["picture"]["data"] = file.read()
+        file.close()
+
+    elif front_body["operationType"] == "decipher-text":
         lib.call_manage_data(
             bytes(front_body["operationType"], encoding="utf-8"),
             bytes(front_body["picture"]["data"], encoding="utf-8"),
-            bytes("123", encoding="utf-8"),
+            bytes(front_body["message"], encoding="utf-8"),
             bytes("." + front_body["picture"]["type"], encoding="utf-8"),
             bytes(filename, encoding="utf-8")
         )
+
+        file = open("../output_b64/"  + filename + ".txt")
+        resp["message"] = file.read()
+        file.close()
+
+    elif front_body["operationType"] == "encrypt-file":
+        lib.call_manage_data(
+            bytes(front_body["operationType"], encoding="utf-8"),
+            bytes(front_body["picture"]["data"], encoding="utf-8"),
+            bytes(front_body["file"]["data"], encoding="utf-8"),
+            bytes("." + front_body["picture"]["type"], encoding="utf-8"),
+            bytes(filename, encoding="utf-8")
+        )
+        file = open("../output_b64/"  + filename + ".txt")
+        resp["message"] = file.read()
+        file.close()
+
+    elif front_body["operationType"] == "decipher-file":
+            lib.call_manage_data(
+                bytes(front_body["operationType"], encoding="utf-8"),
+                bytes(front_body["picture"]["data"], encoding="utf-8"),
+                bytes(front_body["message"], encoding="utf-8"),
+                bytes("." + front_body["picture"]["type"], encoding="utf-8"),
+                bytes(filename, encoding="utf-8")
+            )
+            file = open("../output_b64/"  + filename + ".txt")
+            resp["message"] = file.read()
+            file.close()
+
+
+
+
+    # if front_body["operationType"] == "encrypt":
+    #     print(1)
+ 
+    # elif front_body["operationType"] == "decipher":
+    #     print(2)
+    #     lib.call_manage_data(
+    #         bytes(front_body["operationType"], encoding="utf-8"),
+    #         bytes(front_body["picture"]["data"], encoding="utf-8"),
+    #         bytes("123", encoding="utf-8"),
+    #         bytes("." + front_body["picture"]["type"], encoding="utf-8"),
+    #         bytes(filename, encoding="utf-8")
+    #     )
     
     
     # result = result.decode("utf-8")

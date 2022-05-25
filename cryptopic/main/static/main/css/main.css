@@ -141,6 +141,14 @@ body {
   display: grid;
 }
 
+.encryption--encrypt-file .encryption_form--encrypt-file {
+  display: grid;
+}
+
+.encryption--decipher-file .encryption_form--decipher-file {
+  display: grid;
+}
+
 .encryption_toggle-wrapper {
   display: flex;
   flex-direction: column-reverse;
@@ -148,6 +156,7 @@ body {
   gap: 10px;
   margin-bottom: 20px;
   position: relative;
+  font-size: 20px;
 }
 
 .encryption_toggle-icon {
@@ -190,14 +199,36 @@ body {
   transition-duration: 0.5s;
 }
 
-.encryption_toggle:checked ~ .encryption_toggle-label:after {
-  font-size: 20px;
-  content: attr(data-on);
+.encryption_toggle-label--decipher, .encryption_toggle-label--encrypt {
+  display: flex;
+  flex-direction: column;
 }
 
-.encryption_toggle ~ .encryption_toggle-label:after {
+.encryption_toggle:checked ~ .encryption_toggle-label .encryption_toggle-label--encrypt {
+  display: none;
+}
+
+.encryption_toggle:checked ~ .encryption_toggle-label .encryption_toggle-label--decipher {
+  display: flex;
+}
+
+.encryption_toggle ~ .encryption_toggle-label .encryption_toggle-label--encrypt {
+  display: flex;
+}
+
+.encryption_toggle ~ .encryption_toggle-label .encryption_toggle-label--decipher {
+  display: none;
+}
+
+.encryption_toggle-label-btn {
   font-size: 20px;
-  content: attr(data-off);
+  padding: 0;
+  border: none;
+  background: none;
+  border-radius: 5px;
+  text-decoration: underline;
+  color: white;
+  cursor: pointer;
 }
 
 .encryption_form {
@@ -358,6 +389,25 @@ body {
 
 .encryption_form--downloaded-pic .encryption_form-downloaded-pic {
   display: block;
+}
+
+.encryption_form-downloaded-file {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -72%);
+  position: absolute;
+  border-radius: 36%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0A3D2B;
+  height: 180px;
+  width: 180px;
+  display: none;
+}
+
+.encryption_form--downloaded-file .encryption_form-downloaded-file {
+  display: flex;
 }
 
 .encryption_form--downloaded-pic1[data-step-count="1"] .encryption_form-downloaded-pic {
