@@ -49,7 +49,7 @@ enum steg_manager_to_call {
 int get_operation_type(char* operation_type) {
     if (!strcmp(operation_type, "decipher-text") || !strcmp(operation_type, "decipher-file")) {
         return DECRYPT;
-    } else if (!strcmp(operation_type, "encrypt-text") || !strcmp(operation_type, "encrypt-text")) {
+    } else if (!strcmp(operation_type, "encrypt-text") || !strcmp(operation_type, "encrypt-file")) {
         return ENCRYPT;
     } else {
         return ERR_TYPE;
@@ -236,17 +236,24 @@ extern "C" {
             std::cout << "calling encrypt..." << std::endl;
             // delete B64Manager;
             const char* answ = encrypt(steg_manager, filename_, B64Manager, txt, img_extension_, meta).c_str();
+            delete B64Manager;
             // return encrypt(steg_manager, filename, B64Manager, txt, img_extension, meta).c_str();
         } else if (operation == 2) {
             std::cout << "calling decrypt..." << std::endl;
             const char* answ = decrypt(steg_manager, filename_, B64Manager, img_extension_, meta).c_str();
-            // delete B64Manager;
+            delete B64Manager;
             std::cout << answ << std::endl;
             // return answ;
         } else {
             // return INVALID_OPERATION_TYPE;
         }
     }
+
+    // void delete_temp_files(char* filename, char* extension) {
+    //     remove();
+    //     remove();
+    //     remove();
+    // }
 }
 
 

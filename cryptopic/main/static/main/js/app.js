@@ -215,6 +215,7 @@ let encryptFileGoNextStep = function () {
       })
       .then((response) => response.json())
       .then((json) => {
+        console.log(json);
         encryptFilePic.src = json.picture.data
         formEncryptFile.dataset.stepCount = +formEncryptFile.dataset.stepCount + 1;
       });
@@ -254,7 +255,7 @@ formEncryptFileInputPic.addEventListener("change", (e) => {
   uploadImage(e, formEncryptFileImage);
   toggleDownloadedPic(formEncryptFile);
   formEncryptFileImage.onload = function() {
-    declareDataDecipher(formEncryptFileImage);
+    declareDataEncryptFile(formEncryptFileImage);
   };
   console.log(encryptionData);
 });
@@ -383,7 +384,7 @@ formDecipherFileInputFile.addEventListener("change", (e) => {
   uploadImage(e, formDecipherFileImage);
   toggleDownloadedPic(formDecipherFile, 1);
   formDecipherFileImage.onload = function() {
-    declareDataDecipher(formDecipherFileImage);
+    declareDataDecipherFile(formDecipherFileImage);
   };
 });
 

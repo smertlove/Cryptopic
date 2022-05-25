@@ -84,19 +84,21 @@ def req(request):
             bytes(filename, encoding="utf-8")
         )
         file = open("../output_b64/"  + filename + ".txt")
-        resp["message"] = file.read()
+        resp["picture"] = {}
+        resp["picture"]["data"] = file.read()
         file.close()
 
     elif front_body["operationType"] == "decipher-file":
             lib.call_manage_data(
                 bytes(front_body["operationType"], encoding="utf-8"),
                 bytes(front_body["picture"]["data"], encoding="utf-8"),
-                bytes(front_body["message"], encoding="utf-8"),
+                bytes("", encoding="utf-8"),
                 bytes("." + front_body["picture"]["type"], encoding="utf-8"),
                 bytes(filename, encoding="utf-8")
             )
             file = open("../output_b64/"  + filename + ".txt")
-            resp["message"] = file.read()
+            resp["file"] = {}
+            resp["file"]["data"] = file.read()
             file.close()
 
 
