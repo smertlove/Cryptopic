@@ -179,7 +179,7 @@ std::string decrypt(int steg_manager, std::string filename, Base64* B64Manager, 
     fout.open("../output_b64/" + fn);
     std::cout << "OK. write to it" << std::endl;
     std::cout << std::string(answ.begin(), answ.begin()+15) << std::endl;
-    fout << std::string(answ.begin(), answ.begin() + answ.find("!-$ex$y-!"));
+    fout << std::string(answ.begin(), answ.begin() + answ.find("!-$ex$y-!")); //  <----- JPEG FALLS HERE
     std::cout << "OK. close it" << std::endl;
 
     fout.close();
