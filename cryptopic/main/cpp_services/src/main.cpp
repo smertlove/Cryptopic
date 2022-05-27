@@ -116,7 +116,11 @@ std::string encrypt(int steg_manager, std::string filename, Base64* B64Manager, 
         break;
     case 2:  // DCT
         std::cout << "CALL DCT" << std::endl;
-        matrix_img = encode_dct(matrix_img, std::string(txt) + "!-$ex$y-!");
+        for (int i = 0; i < 3; i++) {
+            matrix_img = encode_dct(matrix_img, std::string(txt) + "!-$ex$y-!!-$ex$y-!!-$ex$y-!", 1, i, 80);
+        }
+        
+        
         break;
     default:
         return INVALID_STEG_MANAGER;
@@ -160,7 +164,11 @@ std::string decrypt(int steg_manager, std::string filename, Base64* B64Manager, 
             break;
         case 2:  // DCT (DOESN'T WORK!!!)
             std::cout << "CALL DCT" << std::endl;
-            answ = decode_dct(matrix_img);
+            answ = repair(std::vector<std::string>{
+                decode_dct(matrix_img, 0),
+                decode_dct(matrix_img, 1),
+                decode_dct(matrix_img, 2)
+            });
             break;
         default:
             return INVALID_STEG_MANAGER;
@@ -178,7 +186,7 @@ std::string decrypt(int steg_manager, std::string filename, Base64* B64Manager, 
 
     fout.open("../output_b64/" + fn);
     std::cout << "OK. write to it" << std::endl;
-    std::cout << std::string(answ.begin(), answ.begin()+15) << std::endl;
+    std::cout << answ << std::endl;
     fout << std::string(answ.begin(), answ.begin() + answ.find("!-$ex$y-!")); //  <----- JPEG FALLS HERE
     std::cout << "OK. close it" << std::endl;
 

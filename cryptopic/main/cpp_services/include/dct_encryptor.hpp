@@ -1,4 +1,9 @@
 #pragma once
+
+#include <fstream>
+#include <functional>
+#include <algorithm>
+#include <unordered_map>
 #include <opencv2/core/core.hpp>
 
 #include "encryptor_consts.hpp"
@@ -174,4 +179,33 @@ inline std::string decode_dct(const cv::Mat& img, int channel = 0)
 	}
 
 	return bits;
+}
+
+inline std::string repair(const std::vector<std::string>& texts)
+{
+	using namespace std;
+
+	auto longest = max_element(texts.begin(), texts.end(), [](auto a, auto b) { return a.size() < b.size(); })->size();
+	string result(longest, 0);
+
+	for (int i = 0; i < longest; i++)
+	{
+		unordered_map<char, uchar> freq;
+
+		for (int j = 0; j < texts.size(); j++)
+		{
+			if (texts[j].size() <= i)
+			{
+				continue;
+			}
+
+			freq[texts[j][i]]++;
+		}
+
+		auto frequent = max_element(freq.begin(), freq.end(), [](auto a, auto b) { return a.second < b.second; })->first;
+
+		result[i] = frequent;
+	}
+
+	return result;
 }
