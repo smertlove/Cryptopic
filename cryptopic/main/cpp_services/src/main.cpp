@@ -8,21 +8,18 @@
 #include <cstring>
 #include <cstdlib>
 
-// openCV (which has finally built)
+// openCV
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 
+// other std libs
 #include <vector>
 #include <random>
-
 
 // open sorce
 #include "Base64.h"
 #include "lsb_encryptor.hpp"
 #include "dct_encryptor.hpp"
-
-// our files
-// #include "utils.h"
 
 
 using namespace macaron;
@@ -45,7 +42,7 @@ enum steg_manager_to_call {
 
 
 
-
+// returns ENCRYPT(1), DECRYPT(2) or ERR_TYPE(-1).
 int get_operation_type(char* operation_type) {
     if (!strcmp(operation_type, "decipher-text") || !strcmp(operation_type, "decipher-file")) {
         return DECRYPT;
@@ -56,6 +53,7 @@ int get_operation_type(char* operation_type) {
     }
 }
 
+// returns LSB(1) for lossless img formats, DCT(2) for various .jpegs or ERR_MANAGER(-1).
 int get_steg_manager_to_call(char* extension_type) {
     if (!strcmp(extension_type, ".png") || !strcmp(extension_type, ".bmp")) {
         return LSB;
@@ -67,6 +65,8 @@ int get_steg_manager_to_call(char* extension_type) {
 }
 
 
+// generate a size n std::string with random ascii characters (range from "start" to "finish").
+// UPD: this one is legacy. Filename generates in Python.
 std::string get_random_name(size_t start, size_t finish, size_t n) {
     std::random_device random_device;
     std::mt19937 generator(random_device());
@@ -79,6 +79,7 @@ std::string get_random_name(size_t start, size_t finish, size_t n) {
     return result;
 }
 
+// gets rid of b64_img's metadata and calls "Decode" method of b64_manager on b64_img.
 std::string decode_img(char* b64_img, Base64 *b64_manager) {
     // get rid of useless b64 part
     while (*b64_img != ',') {++b64_img;}
@@ -91,6 +92,7 @@ std::string decode_img(char* b64_img, Base64 *b64_manager) {
     return img_decoded;
 }
 
+// stores b64_str's metadata in an std::string.
 std::string get_b64_meta_data(char* b64_str) {
     std::string meta;
     char* ptr = b64_str;
@@ -99,7 +101,6 @@ std::string get_b64_meta_data(char* b64_str) {
         ++ptr;
     }
     meta += *ptr;
-    std::cout << "meta: " << meta << std::endl;
     return meta;
 }
 
@@ -157,7 +158,7 @@ std::string decrypt(int steg_manager, std::string filename, Base64* B64Manager, 
             std::cout << "CALL LSB" << std::endl;
             answ = decode_lsb(matrix_img);
             break;
-        case 2:  // DCT
+        case 2:  // DCT (DOESN'T WORK!!!)
             std::cout << "CALL DCT" << std::endl;
             answ = decode_dct(matrix_img);
             break;
@@ -165,95 +166,77 @@ std::string decrypt(int steg_manager, std::string filename, Base64* B64Manager, 
             return INVALID_STEG_MANAGER;
     }
 
-    // char* answ = decode_lsb(matrix_img);
 
-    // cv::imwrite("../output_encoded/" + filename, matrix_img);
-    // std::cout << "finish encoding" << std::endl;
-
-    // std::vector<uchar> buf;
-    // cv::imencode(img_extension, matrix_img, buf);
-    // std::string enc_msg(buf.begin(), buf.end());
-    // std::string encoded = B64Manager->Encode(enc_msg);
-    // answ.erase(answ.find("!-$ex$y-!"));
-    
     std::cout << "writing to file:" << std::endl;
+    std::cout << "make filename" << std::endl;
+
     std::string fn = filename + ".txt";
+    std::cout << "OK. make file obj" << std::endl;
+
     std::ofstream fout;
+    std::cout << "OK. open it" << std::endl;
+
     fout.open("../output_b64/" + fn);
+    std::cout << "OK. write to it" << std::endl;
+    std::cout << std::string(answ.begin(), answ.begin()+15) << std::endl;
     fout << std::string(answ.begin(), answ.begin() + answ.find("!-$ex$y-!"));
+    std::cout << "OK. close it" << std::endl;
+
     fout.close();
     std::cout << "done" << std::endl;
 
-    
-    
     return answ.c_str();
 }
 
 
 
 
-
-
-
-
-
-
-
+// You can use theese from Python.
 extern "C" {
-    // main func
-    void call_manage_data(char* operation_type, char* b64_img, char* txt, char* img_extension, char* filename) {
 
-        std::string filename_      = std::string(filename);
-        std::string img_extension_ = std::string(img_extension);
+// main func. CALL FROM PYTHON ONLY!!!
+void call_manage_data(char* operation_type, char* b64_img, char* txt, char* img_extension, char* filename) {
 
-        std::cout << "------------> " << filename_ << img_extension_ << std::endl;
+    // copy filename and img_extension to a string
+    std::string filename_      = std::string(filename);
+    std::string img_extension_ = std::string(img_extension);
 
-        // get operation type
-        int operation = get_operation_type(operation_type);
-        std::cout << "get operation type: success" << operation << std::endl;
+    // get operation type
+    int operation = get_operation_type(operation_type);
 
-        // choose steg func
-        int steg_manager = get_steg_manager_to_call(img_extension);
+    // choose steg func to call
+    int steg_manager = get_steg_manager_to_call(img_extension);
 
-        // decode b64
-        Base64 *B64Manager = new Base64();
-        std::string meta = get_b64_meta_data(b64_img);
-        std::string img_decoded = decode_img(b64_img, B64Manager);
-        std::cout << "decode b64 img: success" << std::endl;
+    // decode b64_img
+    Base64 *B64Manager = new Base64();
+    std::string meta_ = get_b64_meta_data(b64_img);
+    std::string img_decoded = decode_img(b64_img, B64Manager);
 
+    // save decoded img
+    std::ofstream fout;
+    fout.open("../output_imgs/" + filename_ + img_extension_, std::ios::app |std::ios::binary);
+    fout << img_decoded;
+    fout.close();
 
-        // save img with random name
-        std::ofstream fout;
-        std::string initial_img_fname = filename_ + img_extension_;
-
-        fout.open("../output_imgs/" + initial_img_fname, std::ios::app |std::ios::binary);
-        fout << img_decoded;
-        fout.close();
-        std::cout << "save decoded img: success" << std::endl;
-
-        // magic happens!!
-        if (operation == 1) {
-            std::cout << "calling encrypt..." << std::endl;
-            // delete B64Manager;
-            const char* answ = encrypt(steg_manager, filename_, B64Manager, txt, img_extension_, meta).c_str();
-            delete B64Manager;
-            // return encrypt(steg_manager, filename, B64Manager, txt, img_extension, meta).c_str();
-        } else if (operation == 2) {
-            std::cout << "calling decrypt..." << std::endl;
-            const char* answ = decrypt(steg_manager, filename_, B64Manager, img_extension_, meta).c_str();
-            delete B64Manager;
-            std::cout << answ << std::endl;
-            // return answ;
-        } else {
-            // return INVALID_OPERATION_TYPE;
-        }
+    // magic happens!!
+    if (operation == 1) {
+        std::cout << "preparations done\ncalling encrypt..." << std::endl;
+        const char* answ = encrypt(steg_manager, filename_, B64Manager, txt, img_extension_, meta_).c_str();
+    } else if (operation == 2) {
+        std::cout << "preparations done\ncalling decrypt..." << std::endl;
+        const char* answ = decrypt(steg_manager, filename_, B64Manager, img_extension_, meta_).c_str();
     }
 
-    // void delete_temp_files(char* filename, char* extension) {
-    //     remove();
-    //     remove();
-    //     remove();
-    // }
+    // nearly forgot this :)
+    delete B64Manager;
 }
 
 
+// gets rid of temp files. CALL FROM PYTHON ONLY!!!
+void delete_temp_files(char* filenames[], size_t length) {
+    for (size_t i = 0; i < length; i++) {
+        remove(filenames[i]);
+    }
+}
+
+}  // extern "C"
