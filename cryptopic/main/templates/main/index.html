@@ -12,7 +12,7 @@
   <a href="#maincontent" class="visuallyhidden skiptocontent">Skip to main content</a>
   <header class="header page__header">
     <nav class="main-nav">
-      <b class="logo">cripto<span class="logo_accent">pic</span></b>
+      <b class="logo">crypto<span class="logo_accent">pic</span></b>
       <ul class="main-nav_list">
         <li class="main-nav_item">
           <a href="" class="main-nav_link link">info</a>
@@ -59,11 +59,22 @@
             сообщение
           </p>
           <div class="encryption_form-input-wrap">
-            <input class="input-text encryption_form-text-input" type="text" name="messege" placeholder="секретное сообщение">
+            <input class="input-text encryption_form-text-input" type="text" name="messege" placeholder="секретное сообщение" autocomplete="off">
           </div>
         </div>
         <div class="encryption_form-step" data-step="2">
           <h2 class="encryption_form-step-title">2 шаг</h2>
+          <p class="encryption_form-step-text">
+            введите<br>
+            пароль<br>
+            (опционально)
+          </p>
+          <div class="encryption_form-input-wrap">
+            <input class="input-text encryption_form-text-input encryption_form-text-input--password" type="text" name="messege" placeholder="пароль" autocomplete="off">
+          </div>
+        </div>
+        <div class="encryption_form-step" data-step="3">
+          <h2 class="encryption_form-step-title">3 шаг</h2>
           <p class="encryption_form-step-text">
             прикрепите<br>
             изображение
@@ -78,11 +89,11 @@
             <img class="encryption_form-downloaded-pic" src="" alt="">
           </div>
         </div>
-        <div class="encryption_form-step" data-step="3">
-          <h2 class="encryption_form-step-title">3 шаг</h2>
+        <div class="encryption_form-step" data-step="4">
+          <h2 class="encryption_form-step-title">4 шаг</h2>
           <p class="encryption_form-step-text">
             сообщение<br>
-            звшифровано
+            зашифровано
           </p>
           <div class="encryption_form-input-wrap">
             <img class="encryption_form-encrypt-pic" src="" alt="">
@@ -128,6 +139,17 @@
         <div class="encryption_form-step" data-step="2">
           <h2 class="encryption_form-step-title">2 шаг</h2>
           <p class="encryption_form-step-text">
+            введите<br>
+            пароль<br>
+            (опционально)
+          </p>
+          <div class="encryption_form-input-wrap">
+            <input class="input-text encryption_form-text-input encryption_form-text-input--password" type="text" name="messege" placeholder="пароль" autocomplete="off">
+          </div>
+        </div>
+        <div class="encryption_form-step" data-step="3">
+          <h2 class="encryption_form-step-title">3 шаг</h2>
+          <p class="encryption_form-step-text">
             прикрепите<br>
             изображение
           </p>
@@ -141,11 +163,11 @@
             <img class="encryption_form-downloaded-pic" src="" alt="">
           </div>
         </div>
-        <div class="encryption_form-step" data-step="3">
-          <h2 class="encryption_form-step-title">3 шаг</h2>
+        <div class="encryption_form-step" data-step="4">
+          <h2 class="encryption_form-step-title">4 шаг</h2>
           <p class="encryption_form-step-text">
             файл<br>
-            звшифрован
+            зашифрован
           </p>
           <div class="encryption_form-input-wrap">
             <img class="encryption_form-encrypt-pic" src="" alt="">
@@ -188,12 +210,23 @@
         <div class="encryption_form-step" data-step="2">
           <h2 class="encryption_form-step-title">2 шаг</h2>
           <p class="encryption_form-step-text">
+            введите<br>
+            пароль<br>
+            (опционально)
+          </p>
+          <div class="encryption_form-input-wrap">
+            <input class="input-text encryption_form-text-input encryption_form-text-input--password" type="text" name="messege" placeholder="пароль" autocomplete="off">
+          </div>
+        </div>
+        <div class="encryption_form-step" data-step="3">
+          <h2 class="encryption_form-step-title">3 шаг</h2>
+          <p class="encryption_form-step-text">
             секретное<br>
             сообщение<br>
             из картинки
           </p>
           <div class="encryption_form-input-wrap">
-            <input class="input-text encryption_form-text-input" type="text" name="messege" placeholder="секретное сообщение">
+            <input class="input-text encryption_form-text-input" type="text" name="messege" placeholder="секретное сообщение" autocomplete="off">
           </div>
         </div>
         <button class="encryption_form-btn encryption_form-btn--next" type="button">
@@ -228,6 +261,17 @@
               </svg>
             </label>
             <img class="encryption_form-downloaded-pic" src="" alt="">
+          </div>
+        </div>
+        <div class="encryption_form-step" data-step="2">
+          <h2 class="encryption_form-step-title">2 шаг</h2>
+          <p class="encryption_form-step-text">
+            введите<br>
+            пароль<br>
+            (опционально)
+          </p>
+          <div class="encryption_form-input-wrap">
+            <input class="input-text encryption_form-text-input encryption_form-text-input--password" type="text" name="messege" placeholder="пароль" autocomplete="off">
           </div>
         </div>
         <button class="encryption_form-btn encryption_form-btn--next" type="button">
@@ -291,6 +335,19 @@
 
   </footer>
 
+  <div class="modal modal--empty-string">
+    <button class="modal_close" type="button" name="button"><span class="visuallyhidden">закрыть</span></button>
+    <p class="modal_text">
+      не удалось расшифровать. побробуйте изменить файл или пароль
+    </p>
+  </div>
+  <div class="modal modal--small-img">
+    <button class="modal_close" type="button" name="button"><span class="visuallyhidden">закрыть</span></button>
+    <p class="modal_text">
+      картинка слишком маленькая для этого файла
+    </p>
+  </div>
+
   <svg style="display: none">
     <symbol id="icon-text">
       <g fill="white">
@@ -336,7 +393,8 @@
   </svg>
   <script src="{% static 'main/js/compressor/wasm_compressor.js' %}" charset="utf-8"></script>
   <script src="{% static 'main/js/compressor/compressor.js' %}" charset="utf-8"></script>
-  <script src="{% static 'main/js/app.js' %}" charset="utf-8"></script> 
+  <script src="{% static 'main/js/app.js' %}" charset="utf-8"></script>
+  <script src="{% static 'main/js/app-libs.js' %}" charset="utf-8"></script>
 </body>
 
 </html>

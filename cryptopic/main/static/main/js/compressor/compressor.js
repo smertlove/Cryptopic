@@ -1,9 +1,10 @@
-function saveData(data, filename) {
+function saveData(data, typeFile) {
   if (data) {
     const a = document.createElement('a');
-    const file = new Blob([data], {type: 'octet/stream'});
+    const file = new Blob([data], {type: typeFile});
+    console.log(file);
     a.href= URL.createObjectURL(file);
-    a.download = filename;
+    a.download = `file.${typeFile.split("/")[1]}`;
     a.click();
     URL.revokeObjectURL(a.href);
   }
@@ -21,7 +22,7 @@ function wasmPtrToArray(ptr, length) {
   return array;
 }
 
-function compressData(data, output_name) {
+function compressData(data, fileType) {
   compressDataFunction = Module.cwrap('compress_data', 'number', ['number', 'number', 'number']);
 
   var compressedDataPtr = Module._malloc(data.length);
@@ -29,7 +30,7 @@ function compressData(data, output_name) {
       data.length, compressedDataPtr);
   var compressedData = wasmPtrToArray(compressedDataPtr, compressedDataSize);
 
-  const file = new Blob([compressedData], {type: 'octet/stream'});
+  const file = new Blob([compressedData], {type: "file/" + fileType});
   let reader = new FileReader();
   reader.readAsDataURL(file); // конвертирует Blob в base64 и вызывает onload
 
@@ -47,16 +48,15 @@ function decompressData(data) {
   var decompressedDataSize = decompressDataFunction(arrayToWasmPtr(data),
       data.length, decompressedDataPtr, data.length * 3);
   var decompressedData = wasmPtrToArray(decompressedDataPtr, decompressedDataSize);
-
+  console.log(decompressedData);
   return decompressedData;
 }
 
-
-function processFile(file, processor, output_name) {
+function processFile(file, processor, typeFile) {
   var fileReader = new FileReader();
   fileReader.onload = function () {
     var rawData = new Uint8Array(fileReader.result);
-    saveData(processor(rawData, output_name), encryptionData.file.name);
+    saveData(processor(rawData, file.name.split(".").reverse()[0]), typeFile);
   };
   fileReader.readAsArrayBuffer(file);
 }

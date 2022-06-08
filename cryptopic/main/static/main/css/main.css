@@ -251,39 +251,11 @@ body {
   display: flex;
 }
 
+.encryption_form[data-step-count="4"] .encryption_form-step[data-step="4"] {
+  display: flex;
+}
+
 .encryption_form[data-step-count="1"] .encryption_form-btn--back {
-  display: none;
-}
-
-.encryption_form--encrypt[data-step-count="2"] .encryption_form-btn--next {
-  display: none;
-}
-
-.encryption_form--encrypt[data-step-count="2"].encryption_form--downloaded-pic .encryption_form-btn--next {
-  display: block;
-}
-
-.encryption_form--encrypt[data-step-count="3"] .encryption_form-btn--next {
-  display: none;
-}
-
-.encryption_form--decipher[data-step-count="1"] .encryption_form-btn--next {
-  display: none;
-}
-
-.encryption_form--decipher[data-step-count="2"] .encryption_form-btn--next {
-  display: none;
-}
-
-.encryption_form--decipher[data-step-count="1"].encryption_form--downloaded-pic1 .encryption_form-btn--next {
-  display: block;
-}
-
-.encryption_form--decipher[data-step-count="2"].encryption_form--downloaded-pic2 .encryption_form-btn--next {
-  display: block;
-}
-
-.encryption_form--decipher[data-step-count="3"] .encryption_form-btn--next {
   display: none;
 }
 
@@ -703,6 +675,61 @@ body {
   padding: 5px;
 }
 
+.modal {
+  font-size: 24px;
+  text-align: center;
+  padding: 50px 100px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #0A3D2B;
+  border-radius: 20px;
+  display: none;
+}
+
+.modal--showen {
+  display: block;
+}
+
+.modal_close {
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modal_close:hover {
+  opacity: 0.6;
+}
+
+.modal_close:active {
+  opacity: 0.3;
+}
+
+.modal_close::after, .modal_close::before {
+  position: absolute;
+  content: "";
+  width: 20px;
+  height: 4px;
+  border-radius: 1px;
+  background: white;
+}
+
+.modal_close::after {
+  transform: rotate(45deg);
+}
+
+.modal_close::before {
+  transform: rotate(-45deg);
+}
+
+.modal_text {
+  width: 230px;
+}
+
 .page {
   min-height: 100vh;
   background-image: linear-gradient(120deg, #016751, #2DB97B);
@@ -737,5 +764,3 @@ body {
 .toggle:checked::after {
   width: 36px;
 }
-
-/*# sourceMappingURL=main.css.map */

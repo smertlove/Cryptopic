@@ -105,17 +105,17 @@ std::string get_b64_meta_data(char* b64_str) {
 }
 
 std::string encrypt(int steg_manager, std::string filename, Base64* B64Manager, char* txt, std::string img_extension, std::string meta) {
-    std::cout << "------------> " << "../output_imgs/" + (filename + img_extension) << std::endl;
+    // std::cout << "------------> " << "../output_imgs/" + (filename + img_extension) << std::endl;
     cv::Mat matrix_img = cv::imread("../output_imgs/" + (filename + img_extension));
     
 
     switch (steg_manager) {
     case 1:  // LSB
-        std::cout << "CALL LSB" << std::endl;
+        // std::cout << "CALL LSB" << std::endl;
         matrix_img = encode_lsb(matrix_img, std::string(txt) + "!-$ex$y-!");
         break;
     case 2:  // DCT
-        std::cout << "CALL DCT" << std::endl;
+        // std::cout << "CALL DCT" << std::endl;
         for (int i = 0; i < 3; i++) {
             matrix_img = encode_dct(matrix_img, std::string(txt) + "!-$ex$y-!!-$ex$y-!!-$ex$y-!", 1, i, 80);
         }
@@ -125,7 +125,7 @@ std::string encrypt(int steg_manager, std::string filename, Base64* B64Manager, 
     default:
         return INVALID_STEG_MANAGER;
     }
-    std::cout << "encryption: SUCCESS" << std::endl;
+    // std::cout << "encryption: SUCCESS" << std::endl;
 
     cv::imwrite("../output_encoded/" + (filename + img_extension), matrix_img);
     // std::cout << "finish encoding" << std::endl;
@@ -134,20 +134,20 @@ std::string encrypt(int steg_manager, std::string filename, Base64* B64Manager, 
     cv::imencode(img_extension, matrix_img, buf);
     std::string enc_msg(buf.begin(), buf.end());
 
-    std::cout << "finish encryption process" << std::endl;
+    // std::cout << "finish encryption process" << std::endl;
 
-    std::cout << "writing to file:" << std::endl;
-    std::cout << "make filename" << std::endl;
+    // std::cout << "writing to file:" << std::endl;
+    // std::cout << "make filename" << std::endl;
     std::string fn = filename + ".txt";
-    std::cout << "OK. make file obj" << std::endl;
+    // std::cout << "OK. make file obj" << std::endl;
     std::ofstream fout;
-    std::cout << "OK. open it" << std::endl;
+    // std::cout << "OK. open it" << std::endl;
     fout.open("../output_b64/" + fn);
-    std::cout << "OK. write to it" << std::endl;
+    // std::cout << "OK. write to it" << std::endl;
     fout << (meta + B64Manager->Encode(enc_msg));
-    std::cout << "OK. close it" << std::endl;
+    // std::cout << "OK. close it" << std::endl;
     fout.close();
-    std::cout << "done writing" << std::endl;
+    // std::cout << "done writing" << std::endl;
 
 
     // return (meta + B64Manager->Encode(enc_msg)).c_str();
@@ -159,11 +159,11 @@ std::string decrypt(int steg_manager, std::string filename, Base64* B64Manager, 
     std::string answ;
     switch (steg_manager) {
         case 1:  // LSB
-            std::cout << "CALL LSB" << std::endl;
+            // std::cout << "CALL LSB" << std::endl;
             answ = decode_lsb(matrix_img);
             break;
         case 2:  // DCT (DOESN'T WORK!!!)
-            std::cout << "CALL DCT" << std::endl;
+            // std::cout << "CALL DCT" << std::endl;
             answ = repair(std::vector<std::string>{
                 decode_dct(matrix_img, 0),
                 decode_dct(matrix_img, 1),
@@ -175,23 +175,23 @@ std::string decrypt(int steg_manager, std::string filename, Base64* B64Manager, 
     }
 
 
-    std::cout << "writing to file:" << std::endl;
-    std::cout << "make filename" << std::endl;
+    // std::cout << "writing to file:" << std::endl;
+    // std::cout << "make filename" << std::endl;
 
     std::string fn = filename + ".txt";
-    std::cout << "OK. make file obj" << std::endl;
+    // std::cout << "OK. make file obj" << std::endl;
 
     std::ofstream fout;
-    std::cout << "OK. open it" << std::endl;
+    // std::cout << "OK. open it" << std::endl;
 
     fout.open("../output_b64/" + fn);
-    std::cout << "OK. write to it" << std::endl;
+    // std::cout << "OK. write to it" << std::endl;
 
     fout << std::string(answ.begin(), answ.begin() + answ.find("!-$ex$y-!")); //  <----- JPEG FALLS HERE
-    std::cout << "OK. close it" << std::endl;
+    // std::cout << "OK. close it" << std::endl;
 
     fout.close();
-    std::cout << "done" << std::endl;
+    // std::cout << "done" << std::endl;
 
     return answ.c_str();
 }
@@ -228,10 +228,10 @@ void call_manage_data(char* operation_type, char* b64_img, char* txt, char* img_
 
     // magic happens!!
     if (operation == 1) {
-        std::cout << "preparations done\ncalling encrypt..." << std::endl;
+        // std::cout << "preparations done\ncalling encrypt..." << std::endl;
         const char* answ = encrypt(steg_manager, filename_, B64Manager, txt, img_extension_, meta_).c_str();
     } else if (operation == 2) {
-        std::cout << "preparations done\ncalling decrypt..." << std::endl;
+        // std::cout << "preparations done\ncalling decrypt..." << std::endl;
         const char* answ = decrypt(steg_manager, filename_, B64Manager, img_extension_, meta_).c_str();
     }
 
