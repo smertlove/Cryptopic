@@ -1,5 +1,5 @@
 # cryptopic_py
-Выпускной проект команды Information Security Powerlifting.
+Выпускной проект команды Information Security Powerlifting (Подготовительная программа по программированию на C/C++, МГТУ им. Н.Э. Баумана, Технопарк Mail.ru).
 Web-сервис стеганографии.
 
 
